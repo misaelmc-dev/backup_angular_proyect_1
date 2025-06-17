@@ -1,0 +1,6 @@
+.item-check-yes>span{
+  color:green;
+}
+.item-check-no>span{
+  color: #DC3545;
+}

@@ -1,0 +1,51 @@
+<br>
+<h1>Documentos obligatorios de la entidad "{{entidadNombre}}"</h1>
+<hr>
+<div class="row">
+  <div class="d-flex flex-row-reverse">
+    <button type="button" class="btn btn-danger button-magen" (click)="limpiarAsignados()"> Quitar asignados &nbsp; <i class="fa fa-trash-alt"></i></button>&nbsp;&nbsp;
+    <button type="button" class="btn btn-success button-magen" (click)="asignarTodos()"> Asignar todos &nbsp; <i class='fa fa-check'></i></button>
+  </div>
+</div>
+<br>
+<div class="row scroll">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Frecuencia</th>
+        <th>Tipo</th>
+        <th>Nomenclatura</th>
+        <th class="center-all">Asignado&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+      </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let docu of documentosEntregables">
+      <td>{{docu.id}}</td>
+      <td>{{docu.nombre}}</td>
+      <td class="columna" *ngIf="docu.frecuencia_documento_id">
+        <div *ngFor="let frec of frecuencias">
+          <label *ngIf="frec.id==docu.frecuencia_documento_id">{{frec.frecuencia}}</label>
+        </div>
+      </td>
+      <td class="columna" *ngIf="docu.tipo_id">
+        <div *ngFor="let tip of tipos">
+          <label *ngIf="tip.id==docu.tipo_id">{{tip.tipo}}</label>
+        </div>
+      </td>
+      <td>{{docu.nomenclatura_nombre_archivo}}</td>
+      <td class="center-all">
+        <ng-container *ngIf="docu.guardado">
+            <button class="btn-sm btn-success" (click)="deleteDocumentoToEntidad(docu.id)">
+              <i class="fa fa-check"></i>
+            </button>
+        </ng-container>
+        <ng-container *ngIf="!docu.guardado">
+          <button class="btn-sm btn-default check-free" (click)="addDocumentoToEntidad(docu.id)">&nbsp;</button>
+        </ng-container>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

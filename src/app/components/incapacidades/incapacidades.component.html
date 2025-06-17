@@ -1,0 +1,171 @@
+<br>
+<h1>Incapacidades</h1>
+<hr>
+<div class="row">
+  <div class="col-lg col-md col-sm-12">
+    <button type="button" class="btn btn-success" (click)="addIncapacidadModal(template)"><i class="fa fa-plus"></i></button>
+  </div>
+  <div class="col-lg col-md col-sm-12">
+    <div class="d-flex flex-row-reverse">
+      <button type="button" class="btn btn-danger button-magen" (click)="clearFilters()"> Limpiar filtros &nbsp;<i class="bx bx-filter-alt"></i></button>&nbsp;&nbsp;
+      <button type="button" class="btn btn-success button-magen" (click)="exportToExcel()">Exportar Excel &nbsp;<i class='bx bxs-download'></i></button>
+    </div>
+  </div>
+</div>
+<BR>
+<div class="row">
+  <div class="col-lg col-md col-sm-12">
+    <div class="input-group">
+      <label class="input-group-text">Entidad:</label>
+      <select class="form-select" [(ngModel)]="selectedEntidad" (change)='getTrabajadoresByEntidad()'>
+        <option value="0">Seleccione una entidad...</option>
+        <ng-container *ngFor="let entidad of entidades">
+          <option value="{{entidad.id}}">{{entidad.nombre}}</option>
+        </ng-container>
+      </select>
+    </div>
+  </div>
+  <div class="col-lg col-md col-sm-12">
+    <div class="input-group">
+      <label class="input-group-text">Trabajadores:</label>
+      <select class="form-select" [(ngModel)]="selectedTrabajador" (change)='getEntidadByTrabajador()'>
+        <option  value="0">Seleccione un trabajador</option>
+        <ng-container *ngFor="let trabajador of trabajadores">
+          <option  value="{{trabajador.id}}">{{trabajador.nombre}} {{trabajador.apellidos}}</option>
+        </ng-container>
+      </select>
+    </div>
+  </div>
+</div>
+<br>
+<div class="row scroll">
+  <table class="table">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Trabajador</th>
+      <th>Entidad</th>
+      <th>Motivo</th>
+      <th>Fecha inicio</th>
+      <th>Fecha fin</th>
+      <th>Archivo</th>
+      <th class="accion">Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let inc of incapacidades | paginate : {
+                  id: paginationId,
+                  itemsPerPage: 10,
+                  currentPage: 1
+                }; let i = index">
+      <td>{{inc.id}}</td>
+      <td>{{inc.trabajador.nombre}} {{inc.trabajador.apellidos}}</td>
+      <td>{{inc.entidad.nombre}}</td>
+      <td>{{inc.motivo}}</td>
+      <td>{{inc.fecha_inicio | date: 'yyyy-MM-dd'}}</td>
+      <td>{{inc.fecha_fin | date: 'yyyy-MM-dd'}}</td>
+      <td>
+        <button class="btn btn-primary text-white" *ngIf="inc.archivo_url" (click)="viewIncapacidad(inc.archivo_url)"><i class="fa fa-file"></i></button>
+      </td>
+      <td>
+        <button class="btn btn-success fa fa-edit" (click)="updateIncapacidadModal(template,inc)"></button>&nbsp;
+        <button class="btn btn-danger fa fa-trash" (click)="deleteIncapacidad(inc)"></button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <br>
+  <pagination class="pagination-center" *ngIf="paginationVisible"
+              [id]="paginationId"
+              [boundaryLinks]="true"
+              [directionLinks]="true"
+              [totalItems]="contentArray.length"
+              [itemsPerPage]="10"
+              [maxSize]="5"
+              firstText="Inicio"
+              previousText="<< Anterior"
+              nextText="Siguiente >>"
+              lastText="Final"
+              (pageChanged)="pageChanged($event)">
+  </pagination>
+</div>
+<ng-template #template>
+  <div class="modal-header">
+    <h3 class="modal-title pull-left" *ngIf="!incapacidadId">Registo de incapacidad</h3>
+    <h3 class="modal-title pull-left" *ngIf="incapacidadId">Actualizar incapacidad</h3>
+    <button type="button" class="btn btn-default pull-right" aria-label="Cerrar" (click)="closeModal()">
+      <span aria-hidden="true">×</span> Cerrar
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row row-modal" >
+      <div class="row espace" *ngIf="incapacidadId">
+        <div class="col"><h4 class="form-label">Id:</h4></div>
+        <div class="col">
+          <input type="text" class="form-control" [(ngModel)]="incapacidadId" disabled>
+        </div>
+      </div>
+      <div class="row espace">
+        <div class="col"><h4 class="form-label">Entidad<span class="red">*</span>:</h4></div>
+        <div class="col">
+          <select class="form-select" *ngIf="!incapacidadId" [(ngModel)]="incapacidadEntidadId" (change)="getTrabajadoresByEntidadModal()">
+            <option *ngFor="let entidad of entidadesList" value="{{entidad.id}}">{{entidad.nombre}}</option>
+          </select>
+          <select class="form-select" *ngIf="incapacidadId" [(ngModel)]="incapacidadEntidadId" disabled>
+            <option *ngFor="let entidad of entidadesList" value="{{entidad.id}}">{{entidad.nombre}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="row espace">
+        <div class="col"><h4 class="form-label">Trabajador<span class="red">*</span>:</h4></div>
+        <div class="col">
+          <select class="form-select" *ngIf="!incapacidadId" [(ngModel)]="incapacidadTrabajadorId">
+            <option></option>
+            <option *ngFor="let trabajador of trabajadoresList" value="{{trabajador.id}}">{{trabajador.nombre}} {{trabajador.apellidos}}</option>
+          </select>
+          <select class="form-select" *ngIf="incapacidadId" disabled>
+            <ng-container *ngFor="let trabajador of trabajadoresList">
+              <option *ngIf="incapacidadTrabajadorId==trabajador.id" value="{{trabajador.id}}">{{trabajador.nombre}} {{trabajador.apellidos}}</option>
+            </ng-container>
+          </select>
+        </div>
+      </div>
+      <div class="row espace">
+        <div class="col"><h4 class="form-label">Fecha de inicio<span class="red">*</span>:</h4></div>
+        <div class="col">
+          <input type="text" autocomplete="off" bsDatepicker
+                 [bsConfig]="{dateInputFormat:'YYYY-MM-DD',showWeekNumbers:false,isAnimated:true,containerClass:'theme-dark-blue'}"
+                 [(ngModel)]="incapacidadFechaInicio" class="form-control fecha-class" />
+        </div>
+      </div>
+      <div class="row espace">
+        <div class="col"><h4 class="form-label">Fecha de fin<span class="red">*</span>:</h4></div>
+        <div class="col">
+          <input type="text" autocomplete="off" bsDatepicker
+                 [bsConfig]="{dateInputFormat:'YYYY-MM-DD',showWeekNumbers:false,isAnimated:true,containerClass:'theme-dark-blue'}"
+                 [(ngModel)]="incapacidadFechaFin" class="form-control fecha-class" />
+        </div>
+      </div>
+      <div class="row espace">
+        <h4 class="form-label">Motivo<span class="red">*</span>:</h4>
+        <textarea class="form-control" rows="6" [(ngModel)]="incapacidadMotivo">{{incapacidadMotivo}}</textarea>
+      </div>
+      <div class="row espace" *ngIf="!incapacidadId">
+        <h4 class="form-label">Selecciona documento<span class="red">*</span>:</h4>
+        <input type="file" accept="application/pdf,application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+               aria-label="Subir documento baja" class="form-control-file" (change)="extractFileFromEvent($event)">
+      </div>
+      <div class="row espace" *ngIf="incapacidadId">
+        <div class="col"><h4 class="form-label">Ver documento:</h4></div>
+        <div class="col">
+          <button class="btn btn-primary text-white" *ngIf="incapacidadFile" (click)="viewIncapacidad(incapacidadFile)"><i class="fa fa-file"> Documento</i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="red-s">*</span>&nbsp; Campos obligatorios &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button class="btn btn-success" *ngIf="!incapacidadId" (click)="addIncapacidad()"><i class="fa fa-save"></i> Guardar</button>
+    <button class="btn btn-success" *ngIf="incapacidadId" (click)="updateIncapacidad()"><i class="fa fa-save"></i> Actualizar</button>
+  </div>
+</ng-template>

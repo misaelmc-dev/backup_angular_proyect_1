@@ -1,0 +1,29 @@
+.input-search{border:3px solid #006400FF;}
+.btn-search{width:80px;}
+.btn-nuevo{width:50px;}
+.espace{margin: 5px;}
+.accion{width:120px}
+.form-label{
+  margin-top:5px;
+}
+.modal-large{
+  margin-left:-30%;
+  width:160%;
+  background-color: white;
+  position: relative;
+}
+@media (max-width:576px){
+  .scroll{
+    width:450px;
+    overflow-x: scroll;
+    scroll-behavior: smooth;
+  }
+  .btn-nuevo{
+    width:50px;
+    margin-top:10px;
+  }
+  .modal-large{
+    width:100%;
+    margin-left:0%;
+  }
+}

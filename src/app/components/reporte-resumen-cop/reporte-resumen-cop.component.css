@@ -1,0 +1,14 @@
+.td {
+  text-align: center;
+  vertical-align: middle;
+}
+.pagination-center{
+  padding-left:30%;
+}
+.green-color{background-color:#c5e0b4;}
+.red-color{background-color:#ffa3a3;}
+@media (max-width:576px){
+  .pagination-center{
+    padding-left:0;
+  }
+}

@@ -1,0 +1,113 @@
+<div class="row filter-group">
+  <div class="col-md-3 col-sm-12">
+    <div class="input-group">
+      <input type="text" name="daterange" autocomplete="off" bsDatepicker [maxDate]="today"
+             [bsConfig]="{ rangeInputFormat : 'MMMM YYYY', dateInputFormat: 'MMMM YYYY', showWeekNumbers: false, isAnimated: true, containerClass: 'theme-dark-blue' }"
+             id="DateOfBirth" placeholder="Mes" (bsValueChange)="dateRangeCreated($event)" (onShown)="onOpenCalendar($event)"
+             [(ngModel)]="fecha_completa"  class="form-control fecha-class" />
+      <label class="input-group-text fecha-color" for="entidadesSelect"><i class="fa fa-calendar"></i></label>
+    </div>
+  </div>
+  <div class="col-md-5"></div>
+  <div class="col-md-4 col-sm-12 d-flex flex-row-reverse button-group">
+    <button type="button" class="btn btn-danger button-magen" (click)="cleanFilters()">Limpiar Filtros &nbsp;<i class="bx bx-filter-alt"></i></button>&nbsp;&nbsp;
+    <button type="button" class="btn btn-success button-magen" (click)="exportToExcel()">Exportar Excel &nbsp;<i class='bx bxs-download'></i></button>
+  </div>
+</div>
+<div class="row filter-group">
+    <form action="#" id="filterForm">
+      <fieldset>
+        <div class="row g-3">
+          <div class="input-group col-lg col-md col-sm-12">
+            <input type="text" class="form-control input-search" placeholder="Buscar..." name="search" [(ngModel)]="searchCrit">
+            <div class="input-group-append">
+              <button class="btn btn-success bx bx-search btn-search" (click)="searchAsitenciaByCriterio()"></button>
+            </div>
+          </div>
+          <div class="input-group col-lg col-md col-sm-12">
+            <label class="input-group-text" for="entidadesSelect">Entidad:</label>
+            <select class="form-select" id="entidadesSelect" [(ngModel)]="selectedEntidad"
+                    [ngModelOptions]="{standalone: true}" (change)='getWorkersAndProyectByEntityId()'>
+              <option *ngIf="numeroEntidades==0"></option>
+              <option [value]="item.id" *ngFor="let item of entidades">{{item.nombre}}</option>
+            </select>
+          </div>
+          <div class="input-group col-lg col-md col-sm-12">
+            <label class="input-group-text" for="selectedWorker">Trabajador:</label>
+            <select class="form-select" id="selectedWorker" [(ngModel)]="selectedWorker"
+                    [ngModelOptions]="{standalone: true}" (change)='getEntityAndProyectsByWorker()'>
+              <option *ngIf="numeroWorkers==0"></option>
+              <option [value]="item.id" *ngFor="let item of workers">{{item.nombre}} {{item.apellidos}}</option>
+            </select>
+          </div>
+          <div class="input-group col-lg col-md col-sm-12">
+            <label class="input-group-text" for="proyectoSelect">Proyecto:</label>
+            <select class="form-select" id="proyectoSelect" [(ngModel)]="selectedProyecto"
+                    [ngModelOptions]="{standalone: true}" (change)='getEntityAndWorkerByProyect()'>
+              <option *ngIf="numeroProyectos==0"></option>
+              <option [value]="item.id" *ngFor="let item of proyectos">{{item.nombre}}</option>
+            </select>
+          </div>
+        </div>
+      </fieldset>
+    </form>
+</div>
+<div class="progress" *ngIf="showLoadingBar">
+  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+</div>
+<div class="row">
+  <table class="table">
+    <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">Apellidos</th>
+      <th scope="col">Entidad</th>
+      <th scope="col">Categoría</th>
+      <th scope="col" class="td">Total de asistencias</th>
+      <th scope="col" class="td">Total de faltas</th>
+      <th scope="col" class="td">Incapacidades</th>
+      <th scope="col" class="td">Total de descansos</th>
+      <th scope="col" class="td">Cotizados</th>
+      <th scope="col" class="td">Total mes</th>
+      <th scope="col" class="td">Total día mes</th>
+      <th scope="col" class="td">Coincidencia</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of dataSource | paginate : {
+                  id: paginationId,
+                  itemsPerPage: pageSizeMensual,
+                  currentPage: pageNumberMensual,
+                  totalItems: totalItemsMensual
+                };
+          let i = index">
+      <td>{{item.trab_id}}</td>
+      <td>{{item.nomb_trab}}</td>
+      <td>{{item.apell_trab}}</td>
+      <td>{{item.ent_nombre}}</td>
+      <td>{{item.categ}}</td>
+      <td class="td green-color">{{item.asist}}</td>
+      <td class="td red-color">{{item.faltas}}</td>
+      <td class="td pink-color">{{item.incap}}</td>
+      <td class="td blue-color">{{item.desc}}</td>
+      <td class="td">{{item.cotiz}}</td>
+      <td class="td">{{item.tot_calc_mes}}</td>
+      <td class="td">{{item.tot_dias_mes}}</td>
+      <td class="td">
+        <i class='bx bxs-error-circle danger' *ngIf="item.tot_calc_mes !== item.tot_dias_mes" data-bs-toggle="tooltip" data-bs-placement="right" title="No coincide"></i>
+        <i class='bx bxs-check-circle success' *ngIf="item.tot_calc_mes === item.tot_dias_mes" data-bs-toggle="tooltip" data-bs-placement="right" title="Coincide"></i>
+      </td>
+    </tbody>
+  </table>
+  <br>
+  <pagination-controls
+    [id]="paginationId"
+    previousLabel="Anterior"
+    nextLabel="Siguiente"
+    [responsive]="true"
+    (pageChange)="handlePageMensualChange($event)"
+    *ngIf="dataSource.length>0 && (fecha_completa!='' || selectedEntidad!=0 || selectedProyecto!=0 || selectedWorker!=0)"
+    class="text-center"
+  ></pagination-controls>
+</div>

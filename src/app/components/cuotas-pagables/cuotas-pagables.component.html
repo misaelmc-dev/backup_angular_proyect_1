@@ -1,0 +1,104 @@
+<br>
+<h1>Cuotas Pagables</h1>
+<hr>
+<div class="row scroll">
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">Tipo&nbsp;de&nbsp;cuota</th>
+      <th scope="col">Valor</th>
+      <th scope="col">Valor&nbsp;en&nbsp;porcentaje</th>
+      <th scope="col">Fecha&nbsp;de&nbsp;creación</th>
+      <th scope="col">Fecha&nbsp;de&nbsp;actualización</th>
+      <th scope="col">Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let cuota of cuotasPagables | paginate : {
+                  id: paginationId,
+                  itemsPerPage: pageSizeDiarias,
+                  currentPage: pageNumberDiarias,
+                  totalItems: totalItemsDiarias
+                };
+          let i = index">
+      <td>{{cuota.id}}</td>
+      <td>{{cuota.nombre}}</td>
+      <td *ngIf="cuota.tipo_cuota_id">
+        <div *ngFor="let tipo of tiposCuotas">
+          <label *ngIf="tipo.id==cuota.tipo_cuota_id">{{tipo.tipo}}</label>
+        </div>
+      </td>
+      <td *ngIf="!cuota.tipo_cuota_id"></td>
+      <td>{{cuota.valor}}</td>
+      <td *ngIf="cuota.es_porcent">Sí</td>
+      <td *ngIf="!cuota.es_porcent">No</td>
+      <td>{{cuota.created_at| date:'yyyy-MM-dd'}}</td>
+      <td>{{cuota.updated_at| date:'yyyy-MM-dd'}}</td>
+      <td class="accion">
+        <span>
+          <button class="btn btn-success" (click)="openModal(cuota,template)"><i class="fa fa-edit"></i></button>&nbsp;
+        </span>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<pagination-controls
+  [id]="paginationId"
+  previousLabel="Anterior"
+  nextLabel="Siguiente"
+  [responsive]="true"
+  (pageChange)="handlePageDiariasChange($event)"
+></pagination-controls>
+<ng-template #template>
+  <div class="modal-header modal-large">
+    <h3 class="modal-title pull-left">Actualizar Cuota Pagable</h3>
+    <button type="button" class="btn btn-default pull-right" aria-label="Cerrar" (click)="modalRef.hide()">
+      <span aria-hidden="true">×</span> Cerrar
+    </button>
+  </div>
+  <div class="modal-body modal-large">
+    <div class="row espace">
+      <div class="col-4"><h4 class="form-label">ID:</h4></div>
+      <div class="col-8"><input type="text" class="form-control" value="{{cuotaId}}" disabled></div>
+    </div>
+    <div class="row espace">
+      <div class="col-4"><h4 class="form-label">Nombre<label style="color:red">*</label>:</h4></div>
+      <div class="col-8"><input type="text" class="form-control" #cuotNombre value="{{cuotaNombre}}"></div>
+    </div>
+    <div class="row espace">
+      <div class="col-4"><h4 class="form-label">Tipo&nbsp;Cuota:</h4></div>
+      <div class="col-8">
+        <select class="form-control" #cuotTipo disabled>
+          <option value="{{cuotaTipo}}" selected>{{cuotaNombreTipo}}</option>
+          <option *ngFor="let tipo of tiposCuotas" value="{{tipo.id}}">{{tipo.tipo}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="row espace">
+      <div class="col-4"><h4 class="form-label">Valor:</h4></div>
+      <div class="col-8"><input type="number" class="form-control" #cuotValor value="{{cuotaValor}}"></div>
+    </div>
+    <div class="row espace">
+      <div class="col-9"><h4 class="form-label">Valor en porcentaje:</h4></div>
+      <div class="col-3">
+        <button class="btn btn-success" *ngIf="cuotaPorcentaje"><i class="fa fa-check" ></i> Sí</button>
+        <button class="btn btn-danger" *ngIf="!cuotaPorcentaje"><i class="fa fa-window-close"></i> No</button>
+      </div>
+    </div>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:red;font-size:25px">*</span>&nbsp; Campos obligatorios
+  </div>
+  <div class="modal-footer modal-large">
+    <button class="btn btn-success"
+            (click)="updateCuotaPagable(cuotaId,
+                                       cuotNombre.value,
+                                       cuotTipo .value,
+                                       cuotValor.value
+                                     );cuotNombre.value='';
+                                       cuotTipo.value='';
+                                       cuotValor.value='';
+      "><i class="fa fa-check"></i> Actualizar</button>&nbsp;
+  </div>
+</ng-template>

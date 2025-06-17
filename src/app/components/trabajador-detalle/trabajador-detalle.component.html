@@ -1,0 +1,40 @@
+<br>
+<h1>Detalles del trabajador  "{{trabajadorNombre}} {{trabajadorApellidos}}"</h1>
+<hr>
+<div class="row">
+  <div class="col-lg col-md col-sm-12"><b>ID: </b><label>{{trabajadorId}}</label></div>
+  <div class="col-lg col-md col-sm-12"><b>Nombre:&nbsp;</b><label>{{trabajadorNombre}}</label></div>
+  <div class="col-lg col-md col-sm-12"><b>Apellidos: </b><label>{{trabajadorApellidos}}</label></div>
+  <div class="col-lg col-md col-sm-12"><b>RFC: </b><label>{{trabajadorRfc}}</label></div>
+</div>
+<div class="row">
+  <div class="col-lg col-md col-sm-12"><b>CURP: </b><label>{{trabajadorCurp}}</label></div>
+  <div class="col-lg col-md col-sm-12"><b>NSS: </b><label>{{trabajadorNss}}</label></div>
+  <div class="col-lg col-md col-sm-12"><b>Correo: </b><label>{{trabajadorCorreo}}</label></div>
+  <div class="col-lg col-md col-sm-12"><b>Domicilio: </b><label>{{trabajadorDomicilio}}</label></div>
+</div>
+<div class="row">
+  <div class="col-lg col-md col-sm-12"><b>Fecha de nacimiento: </b><label>{{trabajadorFechaNacimiento | date:'y-MM-d'}}</label></div>
+  <div class="col-lg col-md col-sm-12"><b>Fecha de creación: </b><label>{{trabajadorFechaCreacion | date:'y-MM-d'}}</label></div>
+  <div class="col-lg col-md col-sm-12"><b>Fecha de alta: </b><label>{{trabajadorFechaActualizacion | date:'y-MM-d'}}</label></div>
+  <div class="col-lg col-md col-sm-12"><b>Fecha de baja: </b><label>{{trabajadorFechaEliminacion | date:'y-MM-d'}}</label></div>
+</div>
+<div class="row">
+  <div class="col-lg col-md col-sm-12"><b>Género: </b><label>{{trabajadorNombreGenero}}</label></div>
+  <div class="col-lg col-md col-sm-12"><b>Teléfono: </b><label>{{trabajadorTelefono}}</label></div>
+  <div class="col-lg-6 col-md-6 col-sm-12"><b>Entidad: </b><label>{{trabajadorEntidad}}</label></div>
+</div>
+<div class="row">
+  <div class="col-lg col-md col-sm-12"><b>Cargo: </b><label>{{trabajadorCategoria}}</label></div>
+  <div class="col-lg col-md col-sm-12"><b>Fecha de alta: </b><label>{{entidadFechaAlta | date:'y-MM-d'}}</label></div>
+  <div class="col-lg col-md col-sm-12"><b>Sueldo Total: </b><label>{{entidadSueldo}}</label></div>
+  <div class="col-lg col-md col-sm-12"><b>Número de clínica IMSS: </b><label>{{entidadAltaIMSS}}</label></div>
+</div>
+<div class="row">
+  <div class="col-lg col-md col-sm-12"><b>Persona de contacto: </b><label>{{trabajadorPersonaContacto}}</label></div>
+  <div class="col-lg col-md col-sm-12"><b>Telefono de contacto: </b><label>{{trabajadorTelefonoContact}}</label></div>
+  <div class="col-lg-6 col-md-6 col-sm-12"></div>
+
+</div>
+
+<hr>

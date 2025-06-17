@@ -1,0 +1,104 @@
+<br>
+<h1>Cargos</h1>
+<hr>
+<div class="row">
+  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-12">
+    <div class="input-group">
+      <input type="text" class="form-control input-search" placeholder="Buscar..." name="search" [(ngModel)]="search">
+      <div class="input-group-append">
+        <button class="btn btn-success btn-search fa fa-search" (click)="searchCategoriasByCriterio()"></button>
+      </div>
+    </div>
+  </div>
+  <div class="col-xxl-1 col-xl-1 col-lg-1 col-md-1 col-sm-12">
+    <button type="button" class="btn btn-primary btn-nuevo" (click)="openModal(template)"><i class='fa fa-plus'></i></button>
+  </div>
+  <div class="col-md d-flex flex-row-reverse">
+    <button type="button" class="btn btn-danger btn-limpiar" (click)="clearFilters()"> Limpiar filtros &nbsp;<i class="bx bx-filter-alt"></i></button>&nbsp;&nbsp;
+  </div>
+</div>
+<hr>
+<div class="row scroll">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Nombre</th>
+        <th scope="col">Código Biotime</th>
+        <th scope="col">Fecha de registro</th>
+        <th scope="col">Última actualización</th>
+        <th scope="col">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let categoria of categorias| paginate : {
+                  id: paginationId,
+                  itemsPerPage: pageSizeDiarias,
+                  currentPage: pageNumberDiarias,
+                  totalItems: totalItemsDiarias
+                };
+          let i = index">
+        <td>{{categoria.id}}</td>
+        <td>{{categoria.nombre}}</td>
+        <td>{{categoria.cod_biotime}}</td>
+        <td>{{categoria.created_at | date:'y-M-d h:mm a'}}</td>
+        <td>{{categoria.updated_at | date:'y-M-d h:mm a'}}</td>
+        <td class="accion">
+          <span>
+            <button class="btn btn-success fa fa-edit" (click)="getCategoriaById(categoria,template)"></button>&nbsp;
+            <button class="btn btn-danger fa fa-trash" (click)="deleteCategoriasById(categoria)"></button>
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<pagination-controls
+  [id]="paginationId"
+  previousLabel="Anterior"
+  nextLabel="Siguiente"
+  [responsive]="true"
+  (pageChange)="handlePageDiariasChange($event)"
+></pagination-controls>
+<ng-template #template>
+  <div class="modal-header">
+    <h3 class="modal-title pull-left" *ngIf="categoriaId">Actualizar Cargo</h3>
+    <h3 class="modal-title pull-left" *ngIf="!categoriaId">Nueva Cargo</h3>
+    <button type="button" class="btn btn-default pull-right" aria-label="Cerrar" (click)="modalRef.hide()">
+      <span aria-hidden="true">×</span> Cerrar
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row espace" *ngIf="categoriaId">
+      <div class="col-md-4">
+        <h4 class="control-label">ID: </h4>
+      </div>
+      <div class="col-md-8">
+        <input type="text" class="form-control" value="{{categoriaId}}" disabled>
+      </div>
+    </div>
+    <div class="row espace">
+      <div class="col-md-4">
+        <h4 class="control-label">Nombre<label style="color:red">*</label>: </h4>
+      </div>
+      <div class="col-md-8">
+        <input type="text" class="form-control" #catName value="{{categoriaNombre}}">
+      </div>
+    </div>
+    <div class="row espace">
+      <div class="col-md-6">
+        <h4 class="control-label">Código Biotime: </h4>
+      </div>
+      <div class="col-md-6">
+        <input type="text" class="form-control" #catCode value="{{categoriaCodigo}}">
+      </div>
+    </div>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:red;font-size:25px">*</span>&nbsp; Campos obligatorios
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-success" *ngIf="!categoriaId" (click)="addCategorias(catName.value,catCode.value); catName.value='';catCode.value='';"><i class="fa fa-check"></i> Guardar</button>&nbsp;
+    <button class="btn btn-success" *ngIf="categoriaId" (click)="updateCategorias(categoriaId,catName.value,catCode.value); catName.value='';catCode.value='';"><i class="fa fa-check"></i> Actualizar</button>&nbsp;
+  </div>
+</ng-template>
+

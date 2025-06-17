@@ -1,0 +1,88 @@
+.item{
+  border:1px solid;
+  border-radius:5px;
+  padding:10px;
+  padding-bottom:0px;
+  margin-bottom:5px;
+}
+.titulo{
+  margin-bottom:0;
+}
+.titulo2{
+  margin-bottom:0;
+}
+.item-check-no{
+  border:1px solid;
+  border-radius:5px;
+  padding:3px;
+  width:10px;
+  padding-right:-10px;
+  width:150px;
+}
+.item-check-no>span{
+  color:red;
+}
+.item-check-yes{
+  border:1px solid;
+  border-radius:5px;
+  padding:3px;
+  padding-right:-40px;
+  width:150px;
+}
+.item-check-yes>span{
+  color:green;
+}
+.text-white{
+  color:white;
+}
+.card-simple{
+  width:230px;
+}
+.card-active{
+  width:230px;
+  background-color:#2e8535;
+  color:white;
+}
+.title-button{
+  margin-bottom:10px;
+}
+.table-border{
+  border:1px solid;
+  padding:20px;
+}
+.espace{
+  margin:10px;
+}
+.desc{
+  min-width: 250px;
+}
+.fecha{
+  min-width:120px;
+}
+.acciones{
+  min-width:120px;
+}
+.modal-large{
+  margin-left:-20%;
+  width:140%;
+  background-color: white;
+  position: relative;
+}
+.table-clasic{
+  padding:15px;
+}
+@media (max-width:576px){
+  .scroll-div{
+    width:100%;
+    overflow-x: scroll;
+    scroll-behavior: smooth;
+  }
+  .modal-large{
+    width:100%;
+    margin-left:0%;
+  }
+  .table-clasic{
+    padding:0px;
+  }
+}
+

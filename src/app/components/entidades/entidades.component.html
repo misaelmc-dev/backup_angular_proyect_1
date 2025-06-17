@@ -1,0 +1,216 @@
+<br>
+<h1>Entidades</h1>
+<hr>
+<div class="row">
+  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-12">
+    <div class="input-group mb-3">
+      <input type="text" class="form-control input-search" placeholder="Buscar..." name="search" [(ngModel)]="search">
+      <div class="input-group-append">
+        <button class="btn btn-success fa fa-search btn-search" (click)="searchEntidadesByCriterio()"></button>
+      </div>
+    </div>
+  </div>
+  <div class="col-xxl-1 col-xl-1 col-lg-1 col-md-1 col-sm-12">
+    <button type="button" class="btn btn-primary btn-nuevo" (click)="openModal(template)"><i class='fa fa-plus'></i></button>
+  </div>
+  <div class="col-md d-flex flex-row-reverse">
+    <button type="button" class="btn btn-danger btn-limpiar" (click)="clearFilters()"> Limpiar filtros &nbsp;<i class="bx bx-filter-alt"></i></button>&nbsp;&nbsp;
+  </div>
+</div>
+<hr>
+<div class="row scroll">
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">RFC</th>
+      <th scope="col">Persona</th>
+      <th scope="col">Teléfono</th>
+      <th scope="col">Código Biotime</th>
+      <th scope="col">Registro Patronal</th>
+      <th scope="col">Tipo Patrón</th>
+      <th scope="col">Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let enti of entidades | paginate : {
+                  id: paginationId,
+                  itemsPerPage: pageSizeDiarias,
+                  currentPage: pageNumberDiarias,
+                  totalItems: totalItemsDiarias
+                };
+          let i = index">
+      <td>{{enti.id}}</td>
+      <td>{{enti.nombre}}</td>
+      <td>{{enti.rfc}}</td>
+      <td *ngIf="enti.persona_fisica">Fisica</td>
+      <td *ngIf="!enti.persona_fisica">Moral</td>
+      <td>{{enti.telefono}}</td>
+      <td>{{enti.cod_biotime}}</td>
+      <td>{{enti.registro_patronal}}</td>
+      <td>{{enti.tipo_patron}}</td>
+      <td class="accion">
+          <span>
+            <button class="btn btn-primary fa fa-eye" routerLink="/entidad-detalle/{{enti.id}}"></button>&nbsp;
+            <button class="btn btn-success fa fa-edit" (click)="getEntidadById(enti,template)"></button>&nbsp;
+            <button class="btn btn-danger fa fa-trash" (click)="deleteEntidades(enti)"></button>
+          </span>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<pagination-controls
+  [id]="paginationId"
+  previousLabel="Anterior"
+  nextLabel="Proximo"
+  [responsive]="true"
+  (pageChange)="handlePageDiariasChange($event)"
+></pagination-controls>
+<ng-template #template>
+  <div class="modal-header modal-large">
+    <h3 class="modal-title pull-left" *ngIf="!entidadesId">Crear entidad</h3>
+    <h3 class="modal-title pull-left" *ngIf="entidadesId">Actualizar entidad</h3>
+    <button type="button" class="btn btn-default pull-right" aria-label="Cerrar" (click)="modalRef.hide()">
+      <span aria-hidden="true">×</span> Cerrar
+    </button>
+  </div>
+  <div class="modal-body modal-large">
+    <div class="row">
+      <div class="col-md-6" *ngIf="entidadesId">
+        <div class="row espace">
+          <div class="col-4"><h4 class="form-label">ID:</h4></div>
+          <div class="col-8"><input type="text" class="form-control" value="{{entidadesId}}" disabled></div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row espace">
+          <div class="col-4"><h4 class="form-label">Nombre<label class="red">*</label>:</h4></div>
+          <div class="col-8"><input type="text" class="form-control" #entiname value="{{entidadesName}}"></div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="row espace">
+          <div class="col-4"><h4 class="form-label">RFC:</h4></div>
+          <div class="col-8"><input type="text" class="form-control" #entirfc value="{{entidadesRFC}}"></div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row espace">
+          <div class="col-4"><h4 class="form-label">Persona física:</h4></div>
+          <div class="col-8">
+            <button class="btn btn-success" (click)="changeCheck()" *ngIf="entidadesPesrsonaF"><i class="fa fa-check" ></i> Sí</button>
+            <button class="btn btn-danger" (click)="changeCheck()" *ngIf="!entidadesPesrsonaF"><i class="fa fa-window-close"></i> No</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="row espace">
+          <div class="col-4"><h4 class="form-label">Correo:</h4></div>
+          <div class="col-8"><input type="text" class="form-control" #enticorreo value="{{entidadesCorreo}}"></div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row espace">
+          <div class="col-4"><h4 class="form-label">Teléfono:</h4></div>
+          <div class="col-8"><input type="number" class="form-control" #entitelefono value="{{entidadesTelefono}}"></div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="row espace">
+          <div class="col-4"><h4 class="form-label">Domicilio:</h4></div>
+          <div class="col-8"><input type="text" class="form-control" #entidomicilio value="{{entidadesDomicilio}}"></div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row espace">
+          <div class="col-4"><h4 class="form-label">Ciudad:</h4></div>
+          <div class="col-8"><input type="text" class="form-control" #enticiudad value="{{entidadesCiudad}}"></div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="row espace">
+          <div class="col-4"><h4 class="form-label">País:</h4></div>
+          <div class="col-8"><input type="text" class="form-control" #entipais value="{{entidadesPais}}"></div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row espace">
+          <div class="col-4"><h4 class="form-label">Código postal:</h4></div>
+          <div class="col-8"><input type="number" class="form-control" #enticodpos value="{{entidadesCP}}"></div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="row espace">
+          <div class="col-4"><h4 class="form-label">Página Web:</h4></div>
+          <div class="col-8"><input type="text" class="form-control" #entiwebpage value="{{entidadesWebPage}}"></div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row espace">
+          <div class="col-4"><h4 class="form-label">Código Biotime:</h4></div>
+          <div class="col-8"><input type="text" class="form-control" #enticodbio value="{{entidadesCodigo}}"></div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="row espace">
+          <div class="col-4"><h4 class="form-label">Tipo de patrón:</h4></div>
+          <div class="col-8"><input type="text" class="form-control" #entitippat value="{{entidadesTipoPatron}}"></div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row espace">
+          <div class="col-4"><h4 class="form-label">Registro Patronal:</h4></div>
+          <div class="col-8"><input type="text" class="form-control" #entiregpat value="{{entidadesRegistro}}"></div>
+        </div>
+      </div>
+    </div>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:red;font-size:25px">*</span>&nbsp; Campos obligatorios
+  </div>
+  <div class="modal-footer modal-large">
+    <button class="btn btn-success" *ngIf="!entidadesId"
+            (click)="addEntidades(entiname.value,
+                                        entirfc.value,
+                                        enticorreo.value,
+                                        entitelefono.value,
+                                        entidomicilio.value,
+                                        entipais.value,
+                                        enticiudad.value,
+                                        entiwebpage.value,
+                                        enticodbio.value,
+                                        enticodpos.value,
+                                        entiregpat.value,
+                                        entitippat.value
+                                      );
+      "><i class="fa fa-check"></i> Guardar</button>&nbsp;
+    <button class="btn btn-success" *ngIf="entidadesId"
+            (click)="updateEntidades(entidadesId,
+                                           entiname.value,
+                                            entirfc.value,
+                                            enticorreo.value,
+                                            entitelefono.value,
+                                            entidomicilio.value,
+                                            entipais.value,
+                                            enticiudad.value,
+                                            entiwebpage.value,
+                                            enticodbio.value,
+                                            enticodpos.value,
+                                            entiregpat.value,
+                                            entitippat.value
+                                          );
+      "><i class="fa fa-check"></i> Actualizar</button>&nbsp;
+  </div>
+</ng-template>

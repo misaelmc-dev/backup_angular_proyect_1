@@ -1,0 +1,208 @@
+<br>
+<h1>Proyectos</h1>
+<hr>
+<div class="row">
+  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-12">
+    <div class="input-group mb-3">
+      <input type="text" class="form-control input-search" placeholder="Buscar" name="search" [(ngModel)]="search">
+      <div class="input-group-append">
+        <button class="btn btn-success fa fa-search btn-search" (click)="searchProyectosByCriterio()"></button>
+      </div>
+    </div>
+  </div>
+  <div class="col-xxl-1 col-xl-1 col-lg-1 col-md-1 col-sm-12">
+    <button type="button" class="btn btn-primary btn-nuevo" (click)="openModal(template)"><i class='fa fa-plus'></i></button>
+  </div>
+  <div class="col-md d-flex flex-row-reverse">
+    <button type="button" class="btn btn-danger btn-limpiar" (click)="clearFilters()"> Limpiar filtros &nbsp;<i class="bx bx-filter-alt"></i></button>&nbsp;&nbsp;
+  </div>
+
+</div>
+<hr>
+<div class="row scroll">
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">Tipo</th>
+      <th scope="col">Superficie</th>
+      <th scope="col">Registro de Obra</th>
+      <th scope="col">Propietario</th>
+      <th scope="col">Fecha de creación</th>
+      <th scope="col">Fecha de actualización</th>
+      <th scope="col">Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let proy of proyectos | paginate : {
+                  id: paginationId,
+                  itemsPerPage: pageSizeDiarias,
+                  currentPage: pageNumberDiarias,
+                  totalItems: totalItemsDiarias
+                };
+          let i = index">
+      <td>{{proy.id}}</td>
+      <td>{{proy.nombre}}</td>
+      <td *ngIf="proy.tipo_id">
+        <div *ngFor="let proyt of proyectos_tipo">
+          <label *ngIf="proy.tipo_id==proyt.id">{{proyt.tipo}}</label>
+        </div>
+      </td>
+      <td *ngIf="!proy.tipo_id"></td>
+      <td>{{proy.superficie}}</td>
+      <td>{{proy.registro_obra}}</td>
+      <td>{{proy.reg_obra_propietario_o_num_aviso_ubic_obra}}</td>
+      <td>{{proy.created_at| date:'yyyy-MM-dd'}}</td>
+      <td>{{proy.updated_at| date:'yyyy-MM-dd'}}</td>
+      <td class="accion">
+        <span>
+          <button class="btn btn-primary fa fa-eye" routerLink="/proyecto-detalle/{{proy.id}}"></button>&nbsp;
+          <button class="btn btn-success fa fa-edit" (click)="getProyectosById(proy,template)"></button>&nbsp;
+          <button class="btn btn-danger fa fa-trash" (click)="deleteProyectos(proy)"></button>
+        </span>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<pagination-controls
+  [id]="paginationId"
+  previousLabel="Anterior"
+  nextLabel="Siguiente"
+  [responsive]="true"
+  (pageChange)="handlePageDiariasChange($event)"
+></pagination-controls>
+<ng-template #template>
+  <div class="modal-header modal-large">
+    <h3 class="modal-title pull-left" *ngIf="!proyectosId">Nuevo proyecto</h3>
+    <h3 class="modal-title pull-left" *ngIf="proyectosId">Actualizar proyecto</h3>
+    <button type="button" class="btn btn-default pull-right" aria-label="Cerrar" (click)="modalRef.hide()">
+      <span aria-hidden="true">×</span> Cerrar
+    </button>
+  </div>
+  <div class="modal-body modal-large">
+    <div class="row">
+      <div class="col-md-6" *ngIf="proyectosId">
+        <div class="row espace">
+          <div class="col-4"><h4 class="form-label">ID:</h4></div>
+          <div class="col-8"><input type="text" class="form-control" value="{{proyectosId}}" disabled></div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row espace">
+          <div class="col-4"><h4 class="form-label">Nombre<label style="color:red">*</label>:</h4></div>
+          <div class="col-8"><input type="text" class="form-control" #proyname value="{{proyectosName}}"></div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="row espace">
+          <div class="col-4"><h4 class="form-label">Monto:</h4></div>
+          <div class="col-8"><input type="number" class="form-control" #proymonto value="{{proyectosMonto}}"></div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row espace">
+          <div class="col-4"><h4 class="form-label">Tipo<label style="color:red">*</label>:</h4></div>
+          <div class="col-8">
+            <select type="text" class="form-control" #proytipo>
+              <option></option>
+              <option *ngIf="proyectosId" value="{{proyectosTipoId}}" selected>{{proyectosTipoValue}}</option>
+              <option *ngFor="let proyt of proyectos_tipo" value="{{proyt.id}}">{{proyt.tipo}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="row espace">
+          <div class="col-4"><h4 class="form-label">Fecha de inicio:</h4></div>
+          <div class="col-8">
+            <input type="text" autocomplete="off" bsDatepicker
+                   [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', showWeekNumbers: false, isAnimated: true, containerClass: 'theme-dark-blue' }"
+                   placeholder="{{proyectosFechaini}}" #proyFI value="{{proyectosFechaini}}" class="form-control fecha-class" />
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row espace">
+          <div class="col-4"><h4 class="form-label">Fecha de fin:</h4></div>
+          <div class="col-8">
+            <input type="text" autocomplete="off" bsDatepicker
+                   [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', showWeekNumbers: false, isAnimated: true, containerClass: 'theme-dark-blue' }"
+                   placeholder="{{proyectosFechafin}}" #proyFF value="{{proyectosFechafin}}" class="form-control fecha-class" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="row espace">
+          <div class="col-4"><h4 class="form-label">Ubicación:</h4></div>
+          <div class="col-8"><input type="text" class="form-control" #proyubicacion value="{{proyectosUbicacion}}"></div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row espace">
+          <div class="col-4"><h4 class="form-label">Superficie:</h4></div>
+          <div class="col-8"><input type="text" class="form-control" #proysuperficie value="{{proyectosSuperficie}}"></div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="row espace">
+          <div class="col-4"><h4 class="form-label">Propietario:</h4></div>
+          <div class="col-8"><input type="text" class="form-control" #proypropietario value="{{proyectosPropietario}}"></div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="row espace">
+          <div class="col-4"><h4 class="form-label">Registro Obras:</h4></div>
+          <div class="col-8"><input type="text" class="form-control" #proyregistro value="{{proyectosRegistro}}"></div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="row espace">
+          <div class="col-4"><h4 class="form-label">Código Biotime:</h4></div>
+          <div class="col-8"><input type="text" class="form-control" #proycodigo value="{{proyectosCodigo}}"></div>
+        </div>
+      </div>
+    </div>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:red;font-size:25px">*</span>&nbsp; Campos obligatorios
+  </div>
+  <div class="modal-footer modal-large">
+    <button class="btn btn-success" *ngIf="!proyectosId"
+            (click)="addProyectos(proyname.value,
+                                  proyregistro.value,
+                                  proysuperficie.value,
+                                  proypropietario.value,
+                                  proymonto.value,
+                                  proyFI.value,
+                                  proyFF.value,
+                                  proyubicacion.value,
+                                  proycodigo.value,
+                                  proytipo.value
+                                );
+      "><i class="fa fa-check"></i> Guardar</button>&nbsp;
+    <button class="btn btn-success" *ngIf="proyectosId"
+            (click)="updateProyectos(proyectosId,
+                                     proyname.value,
+                                     proyregistro.value,
+                                     proysuperficie.value,
+                                     proypropietario.value,
+                                     proymonto.value,
+                                     proyFI.value,
+                                     proyFF.value,
+                                     proyubicacion.value,
+                                     proycodigo.value,
+                                     proytipo.value
+                                   );
+      "><i class="fa fa-check"></i> Actualizar</button>&nbsp;
+  </div>
+</ng-template>

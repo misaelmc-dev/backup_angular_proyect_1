@@ -1,0 +1,206 @@
+<!--
+<div class="container">
+  <div class="row">
+    <div class="col-md-4 offset-md-4">
+      <div class="login-form bg-light mt-4 p-4">
+        <form [formGroup]="loginForm" (ngSubmit)="login(loginForm.value)" class="row g-3">
+          <div style="display: flex; justify-content: center;">
+            <img width="170px" height="50px" src="https://custom-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_limit,fl_lossy,h_300,w_300,f_auto,q_auto/6493119/367054_390685.png" >
+          </div>
+          <div style="display: flex; justify-content: center;margin-bottom:-15px">
+            <h4>Sistema de Control de</h4>
+          </div>
+          <div style="display: flex; justify-content: center;">
+            <h4>Seguridad Social</h4>
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="user-addon">
+              <i class='bx bxs-user'></i>
+            </span>
+            <input type="email" formControlName="email" class="form-control" placeholder="Usuario (correo)..." required>
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="pass-addon">
+              <i class='bx bxs-lock' ></i>
+            </span>
+            <input type="password" formControlName="password" class="form-control" placeholder="Contraseña..." required>
+          </div>
+          <div class="col-8">
+            <p class="mb-0"><a routerLink="/forgot-password">¿Olvidaste tu contraseña?</a></p>
+          </div>
+          <div class="col-4">
+            <button type="submit" class="btn btn-dark float-end">Acceder</button>
+          </div>
+        </form>
+        <hr class="mt-4">
+        <div class="col-12">
+          <p class="text-center mb-0">Copyright © 2022 Habilis ICC SRL de CV</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+-->
+<div class="page-wrapper auth">
+  <div class="page-inner bg-brand-gradient">
+    <div class="page-content-wrapper bg-transparent m-0" style="padding-left: 0;">
+      <div class="height-10 w-100 shadow-lg px-4 bg-brand-gradient">
+        <div class="d-flex align-items-center container p-0">
+          <div class="d-flex width-mobile-auto m-0 align-items-center justify-content-center p-0 bg-transparent bg-img-none shadow-0 height-9 border-0">
+            <a href="javascript:void(0)" class="page-logo-link press-scale-down d-flex align-items-center"
+               style="margin-left:93px;margin-right:81px">
+              <img src="assets/img/br_logo.jpeg" alt="BR Logo" aria-roledescription="BR logo" width="140px">
+            </a>
+          </div>
+          <!--<a href="page_register.html" class="btn-link text-white ml-auto">
+            Create Account
+          </a>-->
+        </div>
+      </div>
+      <div class="flex-1" style="background: url('assets/img/svg/pattern-1.svg') no-repeat center bottom fixed; background-size: cover;">
+        <div class="container py-4 py-lg-5 my-lg-5 px-4 px-sm-0">
+          <div class="row" style="margin-left:81px;margin-right:81px">
+            <div class="col col-md-6 col-lg-7 hidden-sm-down">
+              <h2 class="fs-xxl fw-500 text-white" style="font-family:Poppins;">
+                Sistema de Control y Gestión de Seguridad Social
+                <small class="fw-300 mt-3 mb-0 text-white opacity-60" style="font-family:Poppins;font-size:19px">
+                  Plataforma para la gestión integrada de recursos humanos y seguridad social (SCGSS).
+                </small>
+              </h2>
+              <!--<a href="#" class="fs-lg fw-500 text-white opacity-70">Learn more &gt;&gt;</a>-->
+              <div class="d-sm-flex flex-column align-items-center justify-content-center d-md-block mt-2">
+                <div class="px-0 py-1 mt-xl-4 text-white fs-nano opacity-50">
+                  Únete a la conversación en nuestras redes sociales
+                </div>
+                <div class="d-flex flex-row opacity-70">
+                  <a href="https://www.facebook.com/Scintra-106799051770154/" target="_blank" class="mr-2 fs-xxl text-white">
+                    <i class="fab fa-facebook-square"></i>
+                  </a>
+                  <a href="https://twitter.com/Scintraa" target="_blank" class="mr-2 fs-xxl text-white">
+                    <i class="fab fa-twitter-square"></i>
+                  </a>
+                  <a href="https://www.youtube.com/channel/UCzwT4KwrvHnKfRkBj36aBLA" class="mr-2 fs-xxl text-white">
+                    <i class="fab fa-youtube-square"></i>
+                  </a>
+                  <a href="https://www.linkedin.com/in/scintra-scintra-235b25221/" target="_blank" class="mr-2 fs-xxl text-white">
+                    <i class="fab fa-linkedin"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-5 col-xl-4 ml-auto" style="margin-top:-40px">
+              <span class="text-white fw-300 mb-3 d-sm-block" style="font-size:22px;font-family:Poppins">
+                Inicio de sesión seguro
+              </span>
+              <div class="card p-4 rounded-plus bg-faded" style="border-radius:10px">
+                <div *ngIf="!validCredentials" class="invalid-feedback poppins">Los datos ingresados de inicio de sesión son inválidos, corrija los datos e intente nuevamente.</div>
+                <div *ngIf="serverErrors" class="invalid-feedback poppins">Ocurrió un error al intentar autenticarlo, espere unos minutos e intente nuevamente. Si el problema persiste contacte a soporte.</div>
+                <form id="js-login" [formGroup]="loginForm" (ngSubmit)="login(loginForm.value)">
+                  <div class="form-group">
+                    <label class="form-label" for="username" style="font-size:13px;">Correo</label>
+                    <input type="email" id="username" formControlName="email" class="form-control" placeholder="&nbsp;&nbsp;&nbsp;Correo" value="" required>
+                    <!--<div class="invalid-feedback">No, datos incorrectos.</div>-->
+                    <div class="help-block">Tu correo es tu nombre de usuario único</div>
+                  </div>
+                  <div class="form-group" style="font-size:10px" >
+                    <label class="form-label" for="password" style="font-size:13px;">Contraseña</label>
+                    <input type="password" id="password" formControlName="password" class="form-control" placeholder="&nbsp;&nbsp;&nbsp;Contraseña" value="" required>
+                    <!--<div class="invalid-feedback">Lo sentimos, datos incorrectos.</div>-->
+                    <div class="help-block">Tu contraseña</div>
+                  </div>
+                  <div class="row no-gutters" style="margin-top:-5px;">
+                    <div class="col-lg-6 pl-lg-1 my-2 btn-group">
+                    </div>
+                    <div class="col-lg-6 pl-lg-1 my-2">
+                      <button id="js-login-btn" type="submit" class="btn btn-block btn-lg" style="background-color: #ff4f00; color: white">
+                        <label style="font-size:16px;">Login</label>
+                      </button>
+                    </div>
+                    <!--<div class="col-lg-6 pl-lg-1 my-2">
+                      <button id="js-login-provider-btn" class="btn btn-block btn-lg" style="background-color: darkcyan; color: white">Comunidad</button>
+                    </div>-->
+                  </div>
+                </form>
+                <div class="blankpage-footer text-center">
+                  <p class="m-0" style="font-size:13px;"><a routerLink="/forgot-password"><span class="fw-900"><u>¿Olvidaste tu contraseña?</u></span></a></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="position-absolute pos-bottom pos-left pos-right p-3 text-center text-white" style="font-size:13px;">
+            2022 © SCGSS por&nbsp;<a href='#' class='text-white opacity-40 fw-500' title="SCGSS" target='_blank'>SCGSS</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!---
+<app-loading-modal [show]="showLoading"></app-loading-modal>
+-->
+<!-- BEGIN Color profile -->
+<!-- this area is hidden and will not be seen on screens or screen readers -->
+<!-- we use this only for CSS color refernce for JS stuff -->
+<p id="js-color-profile" class="d-none">
+  <span class="color-primary-50"></span>
+  <span class="color-primary-100"></span>
+  <span class="color-primary-200"></span>
+  <span class="color-primary-300"></span>
+  <span class="color-primary-400"></span>
+  <span class="color-primary-500"></span>
+  <span class="color-primary-600"></span>
+  <span class="color-primary-700"></span>
+  <span class="color-primary-800"></span>
+  <span class="color-primary-900"></span>
+  <span class="color-info-50"></span>
+  <span class="color-info-100"></span>
+  <span class="color-info-200"></span>
+  <span class="color-info-300"></span>
+  <span class="color-info-400"></span>
+  <span class="color-info-500"></span>
+  <span class="color-info-600"></span>
+  <span class="color-info-700"></span>
+  <span class="color-info-800"></span>
+  <span class="color-info-900"></span>
+  <span class="color-danger-50"></span>
+  <span class="color-danger-100"></span>
+  <span class="color-danger-200"></span>
+  <span class="color-danger-300"></span>
+  <span class="color-danger-400"></span>
+  <span class="color-danger-500"></span>
+  <span class="color-danger-600"></span>
+  <span class="color-danger-700"></span>
+  <span class="color-danger-800"></span>
+  <span class="color-danger-900"></span>
+  <span class="color-warning-50"></span>
+  <span class="color-warning-100"></span>
+  <span class="color-warning-200"></span>
+  <span class="color-warning-300"></span>
+  <span class="color-warning-400"></span>
+  <span class="color-warning-500"></span>
+  <span class="color-warning-600"></span>
+  <span class="color-warning-700"></span>
+  <span class="color-warning-800"></span>
+  <span class="color-warning-900"></span>
+  <span class="color-success-50"></span>
+  <span class="color-success-100"></span>
+  <span class="color-success-200"></span>
+  <span class="color-success-300"></span>
+  <span class="color-success-400"></span>
+  <span class="color-success-500"></span>
+  <span class="color-success-600"></span>
+  <span class="color-success-700"></span>
+  <span class="color-success-800"></span>
+  <span class="color-success-900"></span>
+  <span class="color-fusion-50"></span>
+  <span class="color-fusion-100"></span>
+  <span class="color-fusion-200"></span>
+  <span class="color-fusion-300"></span>
+  <span class="color-fusion-400"></span>
+  <span class="color-fusion-500"></span>
+  <span class="color-fusion-600"></span>
+  <span class="color-fusion-700"></span>
+  <span class="color-fusion-800"></span>
+  <span class="color-fusion-900"></span>
+</p>
+

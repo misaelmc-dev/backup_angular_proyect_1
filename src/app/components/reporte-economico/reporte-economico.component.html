@@ -1,0 +1,29 @@
+<br>
+<h1>Reporte de Cuotas Omitidas</h1>
+<nav>
+  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+    <button class="nav-link active" id="nav-dias-tab" data-bs-toggle="tab" data-bs-target="#nav-dias" type="button" role="tab" aria-controls="nav-dias" aria-selected="true"><h5>Días Laborados</h5></button>
+    <button class="nav-link" id="nav-imss-tab" data-bs-toggle="tab" data-bs-target="#nav-imss" type="button" role="tab" aria-controls="nav-imss" aria-selected="false"><h5>Cuotas IMSS</h5></button>
+    <!--
+    <button class="nav-link" id="nav-pagadas-tab" data-bs-toggle="tab" data-bs-target="#nav-pagadas" type="button" role="tab" aria-controls="nav-pagadas" aria-selected="false"><h5>Cuotas IMSS Pagadas</h5></button>
+    -->
+    <button class="nav-link" id="resumen-tab" data-bs-toggle="tab" data-bs-target="#resumen" type="button" role="tab" aria-controls="resumen" aria-selected="false"><h5>Resumen COP</h5></button>
+  </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+  <div class="tab-pane fade show active" id="nav-dias" role="tabpanel" aria-labelledby="nav-dias-tab">
+    <app-reporte-dias-laborados></app-reporte-dias-laborados>
+  </div>
+  <div class="tab-pane fade" id="nav-imss" role="tabpanel" aria-labelledby="nav-imss-tab">
+    <app-reporte-cuotas-imss></app-reporte-cuotas-imss>
+  </div>
+  <!--
+  <div class="tab-pane fade" id="nav-pagadas" role="tabpanel" aria-labelledby="nav-pagadas-tab">
+    <app-reporte-cuotas-imss-pagadas></app-reporte-cuotas-imss-pagadas>
+  </div>
+  -->
+  <div class="tab-pane fade" id="resumen" role="tabpanel" aria-labelledby="resumen-tab">
+    <app-reporte-resumen-cop></app-reporte-resumen-cop>
+  </div>
+</div>
+

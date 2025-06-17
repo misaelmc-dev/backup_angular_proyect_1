@@ -1,0 +1,92 @@
+<br>
+<div class="row">
+  <div class="col-lg-5 col-md-5 col-sm-12">
+    <div class="input-group">
+      <label class="input-group-text">Entidad:</label>
+      <select class="form-select" [(ngModel)]="selectedEntidad" [ngModelOptions]="{standalone: true}"
+              (change)='getProyectoByEntidad()'>
+        <ng-container *ngFor="let entidad of entidades">
+          <option *ngIf="selectedEntidad==entidad.id" value="{{entidad.id}}">{{entidad.nombre}}</option>
+          <option *ngIf="selectedEntidad!=entidad.id" value="{{entidad.id}}">{{entidad.nombre}}</option>
+        </ng-container>
+      </select>
+    </div>
+  </div>
+  <div class="col-lg-4 col-md-4 col-sm-12">
+    <div class="input-group">
+      <label class="input-group-text">Proyecto:</label>
+      <select class="form-select" [(ngModel)]="selectedProyecto" *ngIf="!numeroProyectos"
+              (change)='getEntidadByProyecto()'>
+          <option></option>
+          <ng-container *ngFor="let proyecto of proyectos">
+            <option *ngIf="selectedProyecto==proyecto.id" value="{{proyecto.id}}" selected>{{proyecto.nombre}}</option>
+            <option *ngIf="selectedProyecto!=proyecto.id" value="{{proyecto.id}}">{{proyecto.nombre}}</option>
+          </ng-container>
+      </select>
+      <select class="form-select" for="proyectoSelected" *ngIf="numeroProyectos">
+          <option value="{{proyecto.id}}">{{proyecto.nombre}}</option>
+      </select>
+    </div>
+  </div>
+  <div class="col-lg-3 col-md-3 col-sm-12">
+    <div class="d-flex flex-row-reverse">
+      <button type="button" class="btn btn-danger button-magen" (click)="cleanFilters()"> Limpiar filtros &nbsp;<i class="bx bx-filter-alt"></i></button>&nbsp;&nbsp;
+      <button type="button" class="btn btn-success button-magen" (click)="exportToExcel()">Exportar Excel &nbsp;<i class='bx bxs-download'></i></button>
+    </div>
+  </div>
+</div>
+<br>
+<div class="row">
+  <br>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Razón&nbsp;social</th>
+        <th>Número&nbsp;de&nbsp;contrato</th>
+        <th>Concepto</th>
+        <th>Fecha&nbsp;de&nbsp;firma</th>
+        <th>Fecha&nbsp;de&nbsp;inicio</th>
+        <th>Fecha&nbsp;de&nbsp;término</th>
+        <th>Monto</th>
+        <th>Archivo</th>
+        <th>Detalle</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let contrato of contratos">
+        <td>
+          <div>
+            <p>{{ getLocalEntityById(contrato.entidad_id).nombre }}</p>
+          </div>
+          <!--<div *ngFor="let entity of entidadesList">
+            <p *ngIf="contrato.entidad_id == entity.id">{{entity.nombre}}</p>
+            <p *ngIf="contrato.entidad_id != entity.id">{{contrato.entidad_id + '|' + entity.id}}</p>
+          </div>-->
+        </td>
+        <td>{{contrato.num_contrato}}</td>
+        <td>{{contrato.desc_contrato}}</td>
+        <td>{{contrato.fecha_firma_contrato | date: 'yyyy-MM-dd'}}</td>
+        <td>{{contrato.fecha_desde| date: 'yyyy-MM-dd'}}</td>
+        <td>{{contrato.fecha_hasta| date: 'yyyy-MM-dd'}}</td>
+        <td>{{contrato.monto_contrato| currency:'CAD':'symbol-narrow':'4.2-2'}}</td>
+        <td *ngIf="contrato.archivo_url">
+          <div class="item-check-yes">
+            &nbsp;<span class="fa fa-check-circle"></span>
+            <label>&nbsp;Sí&nbsp;&nbsp;</label>
+            <button class="btn btn-primary text-white" (click)="viewContrato(contrato.archivo_url)"><i class="fa fa-file"></i></button>
+          </div>
+        </td>
+        <td *ngIf="!contrato.archivo_url">
+          <div class="item-check-no">
+            &nbsp;<span class="fa fa-window-close"></span>
+            <label>&nbsp;No&nbsp;&nbsp;</label>
+          </div>
+        </td>
+        <td>
+          <button class="btn btn-primary text-white" routerLink="/contrato-detalle/{{contrato.entidad_id}}/{{contrato.proyecto_id}}"><i class="fa fa-eye"></i></button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+

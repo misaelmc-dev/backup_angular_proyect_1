@@ -1,0 +1,203 @@
+<br>
+<h1>Pagos</h1>
+<hr>
+<div class="row">
+  <div class="col-lg col-md col-sm-12">
+    <div class="input-group">
+      <input type="text" name="fecha"  id="DateOfBirth" autocomplete="off" bsDatepicker [maxDate]="today"
+             [bsConfig]="{ dateInputFormat: 'YYYY-MM', showWeekNumbers: false, isAnimated: true, containerClass: 'theme-dark-blue' }"
+             placeholder="Mes" (bsValueChange)="dateCreated($event)"  (onShown)="onOpenCalendar($event)"
+             value="{{fecha}}" class="form-control fecha-class" />
+      <label class="input-group-text fecha-color"><i class="fa fa-calendar"></i></label>
+    </div>
+  </div>
+  <div class="col-lg col-md col-sm-12">
+    <div class="input-group">
+      <label class="input-group-text">Tipo de cuota:</label>
+      <select class="form-select" [(ngModel)]="selectedCuotas" [ngModelOptions]="{standalone: true}" (change)='getPagos()'>
+        <option></option>
+        <option *ngFor="let pago of cuotasPagables" value="{{pago.id}}">{{pago.nombre}}</option>
+      </select>
+    </div>
+  </div>
+  <div class="col-lg col-md col-sm-12">
+    <div class="d-flex flex-row-reverse">
+      <button type="button" class="btn btn-danger button-magen" (click)="cleanFilters()"> Limpiar filtros &nbsp;<i class="bx bx-filter-alt"></i></button>&nbsp;&nbsp;
+      <button type="button" class="btn btn-success button-magen" (click)="exportToExcel()">Exportar Excel &nbsp;<i class='bx bxs-download'></i></button>
+    </div>
+  </div>
+</div>
+<br>
+<div class="row">
+  <div class="col-lg col-md col-sm-12">
+    <div class="input-group">
+      <label class="input-group-text">Entidad:</label>
+      <select class="form-select" [(ngModel)]="selectedEntidad" [ngModelOptions]="{standalone: true}" (change)='getProyectosAndTrabajadoresByEntidad()' >
+        <ng-container *ngIf="numeroEntidades">
+          <option *ngFor="let entidad of entidades" value="{{entidad.id}}" selected="{{selected}}">{{entidad.nombre}}</option>
+        </ng-container>
+        <ng-container *ngIf="!numeroEntidades">
+          <option></option>
+          <ng-container *ngFor="let entidad of entidades">
+            <ng-container *ngIf="entidad.nombre">
+              <option *ngIf="selectedEntidad==entidad.id" value="{{entidad.id}}" selected="{{selected}}">{{entidad.nombre}}</option>
+              <option *ngIf="selectedEntidad!=entidad.id" value="{{entidad.id}}">{{entidad.nombre}}</option>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </select>
+    </div>
+  </div>
+  <div class="col-lg col-md col-sm-12">
+    <div class="input-group" >
+      <label class="input-group-text">Proyectos:</label>
+      <select class="form-select" [(ngModel)]="selectedProyecto" [ngModelOptions]="{standalone: true}" (change)='getEntidadAndTrabajadorByProyecto()' >
+        <ng-container *ngIf="numeroProyectos">
+          <option *ngFor="let proyecto of proyectos" value="{{proyecto.id}}" selected="{{selected}}">{{proyecto.nombre}}</option>
+        </ng-container>
+        <ng-container *ngIf="!numeroProyectos">
+          <option></option>
+          <ng-container *ngFor="let proyecto of proyectos">
+            <ng-container *ngIf="proyecto.nombre">
+              <option *ngIf="selectedProyecto==proyecto.id" value="{{proyecto.id}}" selected="{{selected}}">{{proyecto.nombre}}</option>
+              <option *ngIf="selectedProyecto!=proyecto.id" value="{{proyecto.id}}">{{proyecto.nombre}}</option>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </select>
+    </div>
+  </div>
+  <div class="col-lg col-md col-sm-12">
+    <div class="input-group" >
+      <label class="input-group-text">Trabajadores:</label>
+      <select class="form-select" [(ngModel)]="selectedTrabajador" [ngModelOptions]="{standalone: true}" (change)='getEntidadAndProyectoByTrabajador()'>
+        <ng-container *ngIf="numeroTrabajadores">
+          <option *ngFor="let trabajador of trabajadores" value="{{trabajador.id}}" selected="{{selected}}">{{trabajador.nombre}} {{trabajador.apellidos}}</option>
+        </ng-container>
+        <ng-container *ngIf="!numeroTrabajadores">
+          <option></option>
+          <ng-container *ngFor="let trabajador of trabajadores">
+            <ng-container *ngIf="trabajador.nombre">
+              <option *ngIf="selectedTrabajador==trabajador.id" value="{{trabajador.id}}" selected="{{selected}}">{{trabajador.nombre}} {{trabajador.apellidos}}</option>
+              <option *ngIf="selectedTrabajador!=trabajador.id" value="{{trabajador.id}}">{{trabajador.nombre}} {{trabajador.apellidos}}</option>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </select>
+    </div>
+  </div>
+</div>
+<hr>
+<button class="btn btn-success" (click)="newPago(template)"><i class="fa fa-plus"></i></button>
+<hr>
+<div class="progress" *ngIf="showLoadingBar">
+  <div class="progress-bar progress-bar-striped progress-bar-animated" style="width:100%"></div>
+</div>
+<div class="row">
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th>Entidad</th>
+      <th>Proyecto</th>
+      <th>Trabajador</th>
+      <th>Cuota Pagable</th>
+      <th>Mes</th>
+      <th>Monto</th>
+      <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of returnedArray| paginate : {
+                  id: paginationId,
+                  itemsPerPage: 10,
+                  currentPage: 1
+                }; let i = index">
+      <td><label *ngFor="let enti of entidades"><p *ngIf="item.entidad_id==enti.id">{{enti.nombre}}</p></label></td>
+      <td><label *ngFor="let proy of proyectos"><p *ngIf="item.proyecto_id==proy.id">{{proy.nombre}}</p></label></td>
+      <td><label *ngFor="let trab of trabajadores"><p *ngIf="item.trabajador_id==trab.id">{{trab.nombre}} {{trab.apellidos}}</p></label></td>
+      <td><label *ngFor="let cuot of cuotasPagables"><p *ngIf="item.cuota_pagable_id==cuot.id">{{cuot.nombre}}</p></label></td>
+      <td>{{item.cubre_mes}}</td>
+      <td>{{item.monto}}</td>
+      <td><button class="btn btn-danger" (click)="deletePago(item)"><i class="fa fa-trash-alt"></i></button></td>
+    </tr>
+    </tbody>
+  </table>
+  <div class="pagination-center" *ngIf="paginationVisible">
+    <pagination
+      [id]="paginationId"
+      [boundaryLinks]="true"
+      [directionLinks]="true"
+      [totalItems]="contentArray.length"
+      [itemsPerPage]="10"
+      [maxSize]="5"
+      firstText="Inicio"
+      previousText="<< Anterior"
+      nextText="Siguiente >>"
+      lastText="Final"
+      (pageChanged)="pageChanged($event)">
+    </pagination>
+  </div>
+</div>
+<ng-template #template>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Registrar Pago</h4>
+    <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="closeModal()">
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row espace">
+      <div class="col"><h4 class="form-label">Proyecto<span class="red">*</span>:</h4></div>
+      <div class="col">
+        <select class="form-select" [(ngModel)]="pagoProyectoId">
+          <option *ngFor="let proy of proyectosList" value="{{proy.id}}">{{proy.nombre}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="row espace">
+      <div class="col"><h4 class="form-label">Entidad<span class="red">*</span>:</h4></div>
+      <div class="col">
+        <select class="form-select" [(ngModel)]="pagoEntidadId" (change)="getTrabajadoresByEntidadModal()">
+          <option *ngFor="let entidad of wntidadesList" value="{{entidad.id}}">{{entidad.nombre}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="row espace">
+      <div class="col"><h4 class="form-label">Trabajador<span class="red">*</span>:</h4></div>
+      <div class="col">
+        <select class="form-select" [(ngModel)]="pagoTrabajadorId">
+          <option></option>
+          <ng-container *ngFor="let trab of trabajadoresList">
+            <option *ngIf="trab.nombre!=''" value="{{trab.id}}">{{trab.nombre}} {{trab.apellidos}}</option>
+          </ng-container>
+        </select>
+      </div>
+    </div>
+    <div class="row espace">
+      <div class="col"><h4 class="form-label">Cuota pagable<span class="red">*</span>:</h4></div>
+      <div class="col">
+        <select class="form-select" [(ngModel)]="pagoCuotaPagoId">
+          <option></option>
+          <option  *ngFor="let cuot of cuotasPagablesList" value="{{cuot.id}}">{{cuot.nombre}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="row espace">
+      <div class="col"><h4 class="form-label">Mes<span class="red">*</span>:</h4></div>
+      <div class="col">
+        <input type="text" autocomplete="off" bsDatepicker
+               [bsConfig]="{dateInputFormat:'YYYY-MM',showWeekNumbers:false,isAnimated:true,containerClass:'theme-dark-blue'}"
+               [(ngModel)]="pagoMes" (onShown)="onOpenCalendar($event)" class="form-control fecha-class" />
+      </div>
+    </div>
+    <div class="row espace">
+      <div class="col"><h4 class="form-label">Monto<span class="red">*</span>:</h4></div>
+      <div class="col">
+        <input type="number" class="form-control" [(ngModel)]="pagoMonto">
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-success" (click)="savePago()"><i class="fa fa-save"></i>&nbsp;&nbsp;Guardar</button>
+  </div>
+</ng-template>

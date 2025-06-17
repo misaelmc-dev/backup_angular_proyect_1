@@ -1,0 +1,30 @@
+.td {
+  text-align: center;
+  vertical-align: middle;
+}
+.details_td {
+  /*border: 1px solid #dddddd;*/
+  text-align: right;
+  width: 50%;
+}
+.modal-large{
+  margin-left:-26%;
+  width:170%;
+  background-color: white;
+  position: relative;
+}
+.text-center{
+  text-aling:center;
+}
+.pagination-center{
+  padding-left:30%;
+}
+@media (max-width:576px){
+  .modal-large{
+    width:100%;
+    margin-left:0%;
+  }
+  .pagination-center{
+    padding-left:0%;
+  }
+}

@@ -1,0 +1,30 @@
+.pagination-center{padding-left:30%;}
+.accion{width:165px}
+.modal-large{
+  margin-left:-80%;
+  width:260%;
+  background-color: white;
+  position: relative;
+}
+.espace{
+  margin:10px;
+}
+.row-modal{
+  margin-right:15px;
+}
+@media (max-width:576px){
+  .scroll{
+    width:390px;
+    overflow-x: scroll;
+    scroll-behavior: smooth;
+  }
+  .modal-large{
+    width:100%;
+    margin-left:0%;
+  }
+  .pagination-center{padding-left:0%;}
+}
+
+#fichero{
+  display: none;
+}

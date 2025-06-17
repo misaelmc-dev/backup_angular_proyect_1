@@ -1,0 +1,108 @@
+<br>
+<h1>Matriz de Altas y Bajas</h1>
+<div class="row">
+  <div class="d-flex flex-row-reverse">
+    <button type="button" class="btn btn-danger button-magen" (click)="cleanFilters()"> Limpiar filtros &nbsp;<i class="bx bx-filter-alt"></i></button>&nbsp;&nbsp;
+    <button type="button" class="btn btn-success button-magen" (click)="exportToExcel()">Exportar Excel &nbsp;<i class='bx bxs-download'></i></button>
+  </div>
+</div>
+<br>
+<div class="row">
+  <div class="col-lg col-sm-12">
+    <div class="input-group">
+      <input type="text" name="daterange" autocomplete="off" bsDaterangepicker [maxDate]="today"
+             [bsConfig]="{rangeInputFormat:'YYYY-MM-DD',dateInputFormat:'YYYY-MM-DD',showWeekNumbers:false,isAnimated:true,containerClass:'theme-dark-blue'}"
+             id="DateOfBirth" placeholder="Rango de fechas" (bsValueChange)="dateRangeCreated($event)" class="form-control" />
+      <label class="input-group-text fecha-color" for="DateOfBirth"><i class="fa fa-calendar"></i></label>
+    </div>
+  </div>
+  <div class="col-lg col-sm-12">
+    <div class="input-group" >
+      <label class="input-group-text">Trabajadores:</label>
+      <select class="form-select" [(ngModel)]="selectedTrabajador" [ngModelOptions]="{standalone: true}" (change)='selectedMatrizTipo()' [disabled]="disabledFilters">
+        <ng-container *ngIf="numeroTrabajadores">
+          <option *ngFor="let trabajador of trabajadores" value="{{trabajador.id}}" selected="{{selected}}">{{trabajador.nombre}} {{trabajador.apellidos}}</option>
+        </ng-container>
+        <ng-container *ngIf="!numeroTrabajadores">
+          <option></option>
+          <ng-container *ngFor="let trabajador of trabajadores">
+            <ng-container *ngIf="trabajador.nombre">
+              <option *ngIf="selectedTrabajador==trabajador.id" value="{{trabajador.id}}" selected="{{selected}}">{{trabajador.nombre}} {{trabajador.apellidos}}</option>
+              <option *ngIf="selectedTrabajador!=trabajador.id" value="{{trabajador.id}}">{{trabajador.nombre}} {{trabajador.apellidos}}</option>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </select>
+    </div>
+  </div>
+  <div class="col-lg col-sm-12">
+    <div class="input-group" >
+      <label class="input-group-text">Tipo:</label>
+      <select class="form-select" [(ngModel)]="selectedTipo" [ngModelOptions]="{standalone: true}"
+              (change)="selectedMatrizTipo()" [disabled]="disabledFilters">
+        <option value="">Todas</option>
+        <option value="alta">Alta</option>
+        <option value="baja">Baja</option>
+      </select>
+    </div>
+  </div>
+</div>
+<br>
+<div class="row">
+  <br>
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th>Id trabajador</th>
+      <th>Nombre</th>
+      <th>Nombre de la entidad</th>
+      <th>Tipo de operación</th>
+      <th>Fecha</th>
+      <th>Detalle de baja</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let altabaja of matriz| paginate : {
+                  id: paginationId,
+                  itemsPerPage: pageSizeDiarias,
+                  currentPage: pageNumberDiarias,
+                  totalItems: totalItemsDiarias
+                }; let i = index">
+      <td>{{altabaja.id_trab}}</td>
+      <td>{{altabaja.nomb_trab}} {{altabaja.apell_trab}}</td>
+      <td>{{altabaja.nomb_ent}}</td>
+      <td *ngIf="altabaja.alta" class="alta">Alta</td>
+      <td *ngIf="altabaja.baja" class="baja">Baja</td>
+      <td *ngIf="!altabaja.fecha_baja">{{altabaja.fecha_alta| date: 'yyyy-MM-dd'}}</td>
+      <td *ngIf="altabaja.fecha_baja">{{altabaja.fecha_baja| date: 'yyyy-MM-dd'}}</td>
+      <td>
+        <ng-container *ngIf="altabaja.baja">
+          <button class="btn btn-primary text-white" (click)="openMotivoModal(altabaja,template)"><i class="fa fa-eye"></i></button>&nbsp;
+          <button class="btn btn-primary text-white" *ngIf="altabaja.archivo_baja_url" (click)="viewContrato(altabaja.archivo_baja_url)"><i class="fa fa-file"></i></button>
+        </ng-container>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <br>
+  <pagination-controls
+    [id]="paginationId"
+    previousLabel="Anterior"
+    nextLabel="Siguiente"
+    [responsive]="true"
+    (pageChange)="handlePageDiariasChange($event)"
+  ></pagination-controls>
+</div>
+<ng-template #template>
+  <div class="modal-header">
+    <h3 class="modal-title pull-left">Motivo de la baja</h3>
+    <button type="button" class="btn btn-default pull-right" aria-label="Cerrar" (click)="modalRef.hide()">
+      <span aria-hidden="true">×</span> Cerrar
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <label>{{motivoBaja}}</label>
+    </div>
+  </div>
+</ng-template>

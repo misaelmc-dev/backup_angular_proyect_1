@@ -1,0 +1,13 @@
+.espace{
+  margin:10px;
+}
+.proyecto-item{
+  border:1px solid;
+  padding-bottom: -10px;
+}
+.borde-left{
+  border-left:1px solid #8f8f8f;
+}
+.acciones{
+  min-width: 120px;
+}

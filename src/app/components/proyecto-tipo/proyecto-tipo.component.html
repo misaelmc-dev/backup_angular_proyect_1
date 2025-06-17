@@ -1,0 +1,135 @@
+<br>
+<h1>Tipos de Proyectos</h1>
+<hr>
+<div class="row">
+  <div class="col-xxl-4 col-xl-4 col-lg-4 col-md-4 col-sm-12">
+    <div class="input-group mb-3">
+      <input type="text" class="form-control input-search" placeholder="Buscar..." name="search" [(ngModel)]="search">
+      <div class="input-group-append">
+        <button class="btn btn-success fa fa-search btn-search" (click)="searchProyectoTipoByCriterio()"></button>
+      </div>
+    </div>
+  </div>
+  <div class="col-xxl-1 col-xl-1 col-lg-1 col-md-1 col-sm-12">
+    <button type="button" class="btn btn-primary btn-nuevo" (click)="openModal(template)"><i class='fa fa-plus'></i></button>
+  </div>
+  <div class="col-md d-flex flex-row-reverse">
+    <button type="button" class="btn btn-danger btn-limpiar" (click)="clearFilters()"> Limpiar filtros &nbsp;<i class="bx bx-filter-alt"></i></button>&nbsp;&nbsp;
+  </div>
+</div>
+<hr>
+<div class="row scroll">
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Tipo</th>
+      <th scope="col">Porciento de mano de obra</th>
+      <th scope="col">Costo m2</th>
+      <th scope="col">Privada</th>
+      <th scope="col">Fecha de creación</th>
+      <th scope="col">Última actualización</th>
+      <th scope="col">Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let tipo of proyectotipo| paginate : {
+                  id: paginationId,
+                  itemsPerPage: pageSizeDiarias,
+                  currentPage: pageNumberDiarias,
+                  totalItems: totalItemsDiarias
+                };
+          let i = index">
+      <td>{{tipo.id}}</td>
+      <td>{{tipo.tipo}}</td>
+      <td>{{tipo.porciento_mano_obra}}</td>
+      <td>{{tipo.costo_m2}}</td>
+      <td *ngIf="tipo.privada">privada</td>
+      <td *ngIf="!tipo.privada"></td>
+      <td>{{tipo.created_at | date:'y-M-d h:mm a'}}</td>
+      <td>{{tipo.updated_at | date:'y-M-d h:mm a'}}</td>
+      <td class="accion">
+          <span>
+            <button class="btn btn-success fa fa-edit" (click)="getProyectoTipoById(tipo,template)"></button>&nbsp;
+            <button class="btn btn-danger fa fa-trash" (click)="deleteProyectosTipos(tipo)"></button>
+          </span>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<pagination-controls
+  [id]="paginationId"
+  previousLabel="Anterior"
+  nextLabel="Siguiente"
+  [responsive]="true"
+  (pageChange)="handlePageDiariasChange($event)"
+></pagination-controls>
+<ng-template #template>
+  <div class="modal-header">
+    <h3 class="modal-title pull-left">Tipo de proyecto</h3>
+    <button type="button" class="btn btn-default pull-right" aria-label="Cerrar" (click)="modalRef.hide()">
+      <span aria-hidden="true">×</span> Cerrar
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row espace" *ngIf="provectoTipoId">
+      <div class="col-md-2">
+        <h4 class="control-label">ID: </h4>
+      </div>
+      <div class="col-md-10">
+        <input type="text" class="form-control" value="{{provectoTipoId}}" disabled>
+      </div>
+    </div>
+    <div class="row espace">
+      <div class="col-md-3">
+        <h4 class="control-label">Tipo<label style="color:red">*</label>: </h4>
+      </div>
+      <div class="col-md-9">
+        <input type="text" class="form-control" #proyTipo value="{{provectoTipoTipo}}">
+      </div>
+    </div>
+    <div class="row espace">
+      <div class="col-md-6">
+        <h4 class="control-label">% mano de obra:</h4>
+      </div>
+      <div class="col-md-6">
+        <input type="number" class="form-control" #proyPorciento value="{{provectoTipoPorciento}}">
+      </div>
+    </div>
+    <div class="row espace">
+      <div class="col-md-6">
+        <h4 class="control-label">Costo: </h4>
+      </div>
+      <div class="col-md-6">
+        <input type="number" class="form-control" #proyCosto value="{{proyectoTipoCosto}}">
+      </div>
+    </div>
+    <div class="row espace">
+      <div class="col-md-6">
+        <h4 class="control-label">Privada: </h4>
+      </div>
+      <div class="col-md-6">
+        <button class="btn btn-success" (click)="changeCheck()" *ngIf="proyectoTipoPrivada"><i class="fa fa-check" ></i> Si</button>
+        <button class="btn btn-danger" (click)="changeCheck()" *ngIf="!proyectoTipoPrivada"><i class="fa fa-window-close"></i> No</button>
+      </div>
+    </div>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:red;font-size:25px">*</span>&nbsp; Campos obligatorios
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-success" *ngIf="!provectoTipoId" (click)="addProyectoTipo(
+          proyTipo.value,
+          proyPorciento.value,
+          proyCosto.value
+      );
+      "><i class="fa fa-check"></i> Guardar</button>&nbsp;
+      <button class="btn btn-success" *ngIf="provectoTipoId" (click)="updateProyectosTipos(
+          provectoTipoId,
+          proyTipo.value,
+          proyPorciento.value,
+          proyCosto.value
+      );
+      "><i class="fa fa-check"></i> Actualizar</button>&nbsp;
+  </div>
+</ng-template>
+

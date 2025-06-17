@@ -1,0 +1,267 @@
+<aside class="page-sidebar" style="height: 100%">
+  <div class="d-flex justify-content-center  mt-3 mb-3 ">
+    <a href="#" class="page-logo-link press-scale-down d-flex align-items-center" data-toggle="modal" data-target="#modal-shortcut">
+      <img src="assets/img/br_logo.jpeg" alt="BR Logo" aria-roledescription="BR logo" width="140px">
+      <span class="position-absolute text-white opacity-50 small pos-top pos-right mr-2 mt-n2"></span>
+    </a>
+  </div>
+  <nav id="js-primary-nav" class="primary-nav" role="navigation">
+    <div class="nav-filter">
+      <div class="position-relative">
+        <input type="text" id="nav_filter_input" placeholder="Buscar en menú..." class="form-control" tabindex="0">
+        <a href="#" onclick="return false;" class="btn-primary btn-search-close js-waves-off" data-action="toggle"
+           data-class="list-filter-active" data-target=".page-sidebar">
+          <i class="fal fa-chevron-up"></i>
+        </a>
+      </div>
+    </div>
+    <div class="info-card">
+      <a>
+        <img [src]="profilePhotoUrl" (error)="this.profilePhotoUrl = this.profilePhotoPlaceholderUrl"
+             class="profile-image rounded-circle" alt="Foto de perfil">
+        <div class="info-card-text">
+          <a class="d-flex align-items-center text-white">
+            <span class="text-truncate text-truncate-sm d-inline-block" style="color: #444">{{name}}</span>
+          </a>
+        </div>
+      </a>
+      <img src="assets/img/bg_amarillo.png" class="cover" alt="Fondo">
+      <a href="#" onclick="return false;" class="pull-trigger-btn" data-action="toggle" data-class="list-filter-active"
+         data-target=".page-sidebar" data-focus="nav_filter_input">
+        <i class="fal fa-angle-down"></i>
+      </a>
+    </div>
+
+    <ul id="jav-nav-menu" class="nav-menu" *ngIf="authRole=='admin'" appNavigation>
+
+      <li [ngClass]="{'active open': (this.router.url.includes('/control-asistencia')
+                      || this.router.url.includes('/matriz-altas-bajas'))}">
+        <a title="Capital humano" data-filter-tags="Capital humano"
+           class="waves-effect waves-themed" aria-expanded="false">
+          <i class="fal fa-user-headset"></i>
+          <span class="nav-link-text">Capital humano</span>
+        </a>
+        <ul style="">
+          <li [ngClass]="{'active': (this.router.url.includes('/control-asistencia'))}" class="ml-3">
+            <a routerLink="/control-asistencia" title="Control de asistencia" data-filter-tags="Control de asistencia">
+              <i class="fal fa-clock"></i>
+              <span class="nav-link-text poppins">Control de asistencia</span>
+            </a>
+            <span class="tooltip">Control de asistencia</span>
+          </li>
+          <li [ngClass]="{'active': (this.router.url.includes('/matriz-altas-bajas'))}" class="ml-3">
+            <a routerLink="/matriz-altas-bajas"
+               title="Matriz altas y bajas" data-filter-tags="Matriz altas y bajas">
+              <i class="fal fa-window-alt"></i>
+              <span class="nav-link-text poppins">Matriz altas y bajas</span>
+            </a>
+            <span class="tooltip">Matriz altas y bajas</span>
+          </li>
+        </ul>
+      </li>
+
+      <li [ngClass]="{'active open': (this.router.url.includes('/reporte-economico')
+                      || this.router.url.includes('/pagos'))}">
+        <a title="Seguridad social" data-filter-tags="Seguridad social"
+           class="waves-effect waves-themed" aria-expanded="false">
+          <i class="fal fa-user-headset"></i>
+          <span class="nav-link-text">Seguridad social</span>
+        </a>
+        <ul style="">
+          <li [ngClass]="{'active': (this.router.url.includes('/reporte-economico'))}" class="ml-3">
+            <a routerLink="/reporte-economico" title="Control de cuotas" data-filter-tags="Control de cuotas">
+              <i class="fal fa-file-invoice-dollar"></i>
+              <span class="nav-link-text poppins">Control de cuotas</span>
+            </a>
+            <span class="tooltip">Cuotas omitidas</span>
+          </li>
+          <!--<li [ngClass]="{'active': (this.router.url.includes('/pagos'))}" class="ml-3">
+            <a routerLink="/pagos" title="Pagos" data-filter-tags="Pagos">
+              <i class="fal fa-sack-dollar"></i>
+              <span class="nav-link-text poppins">Pagos</span>
+            </a>
+            <span class="tooltip">Pagos</span>
+          </li>-->
+        </ul>
+      </li>
+
+      <li [ngClass]="{'active open': (this.router.url.includes('/perfil-contratista')
+                      || this.router.url.includes('/control-contratos'))}">
+        <a title="Gestión documental" data-filter-tags="Gestión documental"
+           class="waves-effect waves-themed" aria-expanded="false">
+          <i class="fal fa-user-headset"></i>
+          <span class="nav-link-text">Gestión documental</span>
+        </a>
+        <ul style="">
+          <li [ngClass]="{'active': (this.router.url.includes('/perfil-contratista'))}" class="ml-3">
+            <a routerLink="/perfil-contratista"
+               title="Gestión de documentos" data-filter-tags="Gestión de documentos">
+              <i class="fal fa-archive"></i>
+              <span class="nav-link-text poppins">Gestión de documentos</span>
+            </a>
+            <span class="tooltip">Control documental</span>
+          </li>
+          <li [ngClass]="{'active': (this.router.url.includes('/control-contratos'))}" class="ml-3">
+            <a routerLink="/control-contratos"
+               title="Gestión de contratos" data-filter-tags="Gestión de contratos">
+              <i class="fal fa-file-certificate"></i>
+              <span class="nav-link-text poppins">Gestión de contratos</span>
+            </a>
+            <span class="tooltip">Gestión de contratos</span>
+          </li>
+        </ul>
+      </li>
+
+      <li [ngClass]="{'active open': (this.router.url.includes('/trabajadores')
+                      || this.router.url.includes('/proyectos')
+                      || this.router.url.includes('/proyectotipo')
+                      || this.router.url.includes('/entidades')
+                      || this.router.url.includes('/documentos-entregables')
+                      || this.router.url.includes('/tipo-documento')
+                      || this.router.url.includes('/categorias')
+                      || this.router.url.includes('/incapacidades')
+                      || this.router.url.includes('/cuotas-pagables')
+                      || this.router.url.includes('/new-email')
+                      || this.router.url.includes('/control-usuarios'))}">
+        <a title="Administración" data-filter-tags="Administración"
+           class="waves-effect waves-themed" aria-expanded="false">
+          <i class="fal fa-user-headset"></i>
+          <span class="nav-link-text">Administración</span>
+        </a>
+        <ul style="">
+          <li [ngClass]="{'active': (this.router.url.includes('/trabajadores'))}" class="ml-3">
+            <a routerLink="/trabajadores"
+               title="Trabajadores" data-filter-tags="Trabajadores">
+              <i class='fal fa-id-card'></i>
+              <span class="nav-link-text poppins">Trabajadores</span>
+            </a>
+            <span class="tooltip">Trabajadores</span>
+          </li>
+          <li [ngClass]="{'active': (this.router.url.includes('/proyectos'))}" class="ml-3">
+            <a routerLink="/proyectos"
+               title="Proyectos" data-filter-tags="Proyectos">
+              <i class="fal fa-city"></i>
+              <span class="nav-link-text poppins">Proyectos</span>
+            </a>
+            <span class="tooltip">Proyectos</span>
+          </li>
+          <li [ngClass]="{'active': (this.router.url.includes('/proyectotipo'))}" class="ml-3">
+            <a routerLink="/proyectotipo"
+               title="Tipos de proyecto" data-filter-tags="Tipos de proyecto">
+              <i class='fal fa-building'></i>
+              <span class="nav-link-text poppins">Tipos de proyecto</span>
+            </a>
+            <span class="tooltip">Tipos de proyecto</span>
+          </li>
+          <li [ngClass]="{'active': (this.router.url.includes('/entidades'))}" class="ml-3">
+            <a routerLink="/entidades"
+               title="Entidades" data-filter-tags="Entidades">
+              <i class='fal fa-school'></i>
+              <span class="nav-link-text poppins">Entidades</span>
+            </a>
+            <span class="tooltip">Entidades</span>
+          </li>
+          <li [ngClass]="{'active': (this.router.url.includes('/documentos-entregables'))}" class="ml-3">
+            <a routerLink="/documentos-entregables"
+               title="Documentos entregables" data-filter-tags="Documentos entregables">
+              <i class='fal fa-file'></i>
+              <span class="nav-link-text poppins">Documentos entregables</span>
+            </a>
+            <span class="tooltip">Documentos entregables</span>
+          </li>
+          <li [ngClass]="{'active': (this.router.url.includes('/tipo-documento'))}" class="ml-3">
+            <a routerLink="/tipo-documento"
+               title="Tipos de documento" data-filter-tags="Tipos de documento">
+              <i class='fal fa-file-archive'></i>
+              <span class="nav-link-text poppins">Tipos de documento</span>
+            </a>
+            <span class="tooltip">Tipos de documento</span>
+          </li>
+          <li [ngClass]="{'active': (this.router.url.includes('/categorias'))}" class="ml-3">
+            <a routerLink="/categorias"
+               title="Cargos" data-filter-tags="Cargos">
+              <i class='fal fa-bookmark'></i>
+              <span class="nav-link-text poppins">Cargos</span>
+            </a>
+            <span class="tooltip">Cargos</span>
+          </li>
+          <li [ngClass]="{'active': (this.router.url.includes('/incapacidades'))}" class="ml-3">
+            <a routerLink="/incapacidades"
+               title="Incapacidades" data-filter-tags="Incapacidades">
+              <i class='fal fa-clinic-medical'></i>
+              <span class="nav-link-text poppins">Incapacidades</span>
+            </a>
+            <span class="tooltip">Incapacidades</span>
+          </li>
+          <!--<li [ngClass]="{'active': (this.router.url.includes('/cuotas-pagables'))}" class="ml-3">
+            <a routerLink="/cuotas-pagables"
+               title="Cuotas pagables" data-filter-tags="Cuotas pagables">
+              <i class='fal fa-dollar-sign'></i>
+              <span class="nav-link-text poppins">Cuotas pagables</span>
+            </a>
+            <span class="tooltip">Cuotas pagables</span>
+          </li>-->
+          <li [ngClass]="{'active': (this.router.url.includes('/control-usuarios'))}" class="ml-3">
+            <a routerLink="/control-usuarios"
+               title="Control de usuarios" data-filter-tags="Control de usuarios">
+              <i class='fal fa-user'></i>
+              <span class="nav-link-text poppins">Control de usuarios</span>
+            </a>
+            <span class="tooltip">Control de usuarios</span>
+          </li>
+          <li [ngClass]="{'active': (this.router.url.includes('/new-email'))}" class="ml-3">
+            <a routerLink="/new-email"
+               title="Nuevo correo" data-filter-tags="Nuevo correo">
+              <i class="fal fa-envelope"></i>
+              <span class="nav-link-text poppins">Nuevo correo</span>
+            </a>
+            <span class="tooltip">Nuevo correo</span>
+          </li>
+        </ul>
+      </li>
+
+    </ul>
+    <ul id="js-nav-menu" class="nav-menu" *ngIf="authRole=='entidad'" appNavigation>
+      <li [ngClass]="{'active': (this.router.url.includes('/asistencias'))}">
+        <a [routerLink]="'/rolentidad/' + id_entidad + '/asistencias'"
+           title="Control de asistencia" data-filter-tags="Control de asistencia">
+          <i class="fal fa-clock"></i>
+          <span class="nav-link-text poppins">Control de asistencia</span>
+        </a>
+        <span class="tooltip">Control de asistencia</span>
+      </li>
+      <li [ngClass]="{'active': (this.router.url.includes('/incapacidades'))}">
+        <a [routerLink]="'/rolentidad/' + id_entidad + '/incapacidades'"
+           title="Incapacidades" data-filter-tags="Incapacidades">
+          <i class='fal fa-clinic-medical'></i>
+          <span class="nav-link-text poppins">Incapacidades</span>
+        </a>
+        <span class="tooltip">Incapacidades</span>
+      </li>
+      <li [ngClass]="{'active': (this.router.url.includes('/control-documental'))}">
+        <a [routerLink]="'/rolentidad/' + id_entidad + '/control-documental'"
+          title="Gestion de documentos" data-filter-tags="Gestion de documentos">
+          <i class="fal fa-archive"></i>
+          <span class="nav-link-text poppins">Gestion de documentos</span>
+        </a>
+        <span class="tooltip">Gestion de documentos</span>
+      </li>
+      <li [ngClass]="{'active': (this.router.url.includes('/trabajadores'))}">
+        <a [routerLink]="'/rolentidad/' + id_entidad + '/trabajadores'"
+           title="Trabajadores" data-filter-tags="Trabajadores">
+          <i class='fal fa-id-card'></i>
+          <span class="nav-link-text poppins">Trabajadores</span>
+        </a>
+        <span class="tooltip">Trabajadores</span>
+      </li>
+      <li [ngClass]="{'active': (this.router.url.includes('/matriz-altas-bajas'))}">
+        <a [routerLink]="'/rolentidad/' +id_entidad + '/matriz-altas-bajas'"
+          title="Matriz altas y bajas" data-filter-tags="Matriz altas y bajas">
+          <i class="fal fa-window-alt"></i>
+          <span class="nav-link-text poppins">Matriz altas y bajas</span>
+        </a>
+        <span class="tooltip">Matriz altas y bajas</span>
+      </li>
+    </ul>
+  </nav>
+</aside>

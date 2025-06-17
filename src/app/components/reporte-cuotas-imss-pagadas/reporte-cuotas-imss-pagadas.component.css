@@ -1,0 +1,8 @@
+.pagination-center{
+  padding-left:30%;
+}
+@media (max-width:576px){
+  .pagination-center{
+    padding-left:0%;
+  }
+}

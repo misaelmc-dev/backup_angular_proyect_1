@@ -1,0 +1,142 @@
+<br>
+<h1>Control de Entrega Documental</h1>
+<br>
+<div class="row">
+  <div class="col-md col-sm-12 d-flex flex-row-reverse button-group">
+    <button type="button" class="btn btn-danger button-magen" (click)="cleanFilters()">Limpiar Filtros &nbsp;<i class="bx bx-filter-alt"></i></button>&nbsp;&nbsp;
+    <button type="button" class="btn btn-success button-magen" (click)="exportToExcel()">Exportar Excel &nbsp;<i class='bx bxs-download'></i></button>
+  </div>
+</div>
+<br>
+<div class="row espace-row">
+  <div class="col-md-4 col-sm-12 espace">
+    <div class="input-group">
+      <label class="input-group-text">Proyecto:</label>
+      <select class="form-select" [(ngModel)]="selectedProyecto"
+              [ngModelOptions]="{standalone: true}" (change)='getDocumentosCriteria()'>
+        <ng-container *ngIf="numeroProyectos">
+          <option *ngFor="let proy of proyectos" [value]="proy.id">{{proy.nombre}}</option>
+        </ng-container>
+        <ng-container *ngIf="!numeroProyectos">
+          <option></option>
+          <ng-container *ngIf="selectedProyecto">
+            <ng-container *ngFor="let proy of proyectos">
+              <option *ngIf="selectedProyecto==proy.id" [value]="proy.id" selected>{{proy.nombre}}</option>
+              <option *ngIf="selectedProyecto!=proy.id" [value]="proy.id">{{proy.nombre}}</option>
+            </ng-container>
+          </ng-container>
+          <ng-container *ngIf="!selectedProyecto">
+            <option [value]="proy.id" *ngFor="let proy of proyectos">{{proy.nombre}}</option>
+          </ng-container>
+        </ng-container>
+      </select>
+    </div>
+  </div>
+  <div class="col-md col-sm-12 espace">
+    <div class="input-group">
+      <label class="input-group-text" for="inputSelect">Frecuencias:</label>
+      <select class="form-select" id="inputSelect" [(ngModel)]="frecuencia"
+              [ngModelOptions]="{standalone: true}" (change)='getDocumentosCriteria()'>
+        <option></option>
+        <option value="solo_docs_unica_vez">Única vez</option>
+        <option value="solo_docs_mensuales">Mensuales</option>
+        <option value="solo_docs_bimestrales">Bimestrales</option>
+      </select>
+    </div>
+  </div>
+</div>
+<br>
+<div class="row espace-row">
+  <div class="input-group col-md col-sm-12 espace">
+    <label class="input-group-text" for="inputSelectEstados">Estados:</label>
+    <select class="form-select" id="inputSelectEstados" [(ngModel)]="estado"
+            [ngModelOptions]="{standalone: true}" (change)='getDocumentosCriteria()'>
+      <option selected>Todos</option>
+      <option value="solo_entregados">Entregados</option>
+      <option value="solo_sin_entregar">Sin entregar</option>
+    </select>
+  </div>
+  <div class="input-group col-md col-sm-12 espace">
+    <label class="input-group-text" for="inputSelectTipos">Tipo de documento:</label>
+    <select class="form-select" id="inputSelectTipos" [(ngModel)]="tipoDocumento" [ngModelOptions]="{standalone: true}" (change)='getDocumentosCriteria()'>
+      <option></option>
+      <option value="">Todos</option>
+      <option *ngFor="let item of tiposDocumentos" [value]="item.id">{{item.tipo}}</option>
+    </select>
+  </div>
+  <div class="col-md col-sm-12">
+    <div class="row espace">
+      <div class="col">
+        <ngx-datepicker [(ngModel)]="fecha_desde" [ngModelOptions]="{standalone: true}" [options]="optionsFechaInicio" (ngModelChange)="getDocumentosCriteriaEvent($event)"></ngx-datepicker>
+      </div>
+      <div class="col">
+        <ngx-datepicker [(ngModel)]="fecha_hasta" [ngModelOptions]="{standalone: true}" [options]="optionsFechaFin" (ngModelChange)="getDocumentosCriteriaEvent($event)"></ngx-datepicker>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+<div class="row espace-row">
+  <table class="table">
+    <thead>
+    <tr>
+      <th scope="col">Proyecto</th>
+      <th scope="col">Documento</th>
+      <th scope="col">Frecuencia</th>
+      <th scope="col">Tipo</th>
+      <th scope="col" class="td">Entregado</th>
+      <th scope="col" class="td">A tiempo</th>
+      <th scope="col">Fecha entrega</th>
+      <th scope="col">Desde</th>
+      <th scope="col">Hasta</th>
+      <th scope="col" class="td">Archivo</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of documents| paginate : {
+                  itemsPerPage: pageSize,
+                  currentPage: pageNumber,
+                  totalItems: totalItems};
+          let i = index">
+      <td>
+        <div *ngFor="let proy of proyectos">
+          <label *ngIf="proy.id==item.proyecto_id">{{proy.nombre}}</label>
+        </div>
+      </td>
+      <td>{{item.nombre_doc}}</td>
+      <td>{{item.frecuencia_doc}}</td>
+      <td>{{item.tipo_doc}}</td>
+      <td class="td">
+        <i class='bx bxs-error-circle danger' *ngIf="!item.fecha_entrega" data-bs-toggle="tooltip" data-bs-placement="left" title="No entregado"></i>
+        <i class='bx bxs-check-circle success' *ngIf="item.fecha_entrega" data-bs-toggle="tooltip" data-bs-placement="left" title="Entregado"></i>
+      </td>
+      <td class="td">
+        <i class='bx bxs-error-circle danger' *ngIf="!item.a_tiempo" data-bs-toggle="tooltip" data-bs-placement="right" title="Retrasado"></i>
+        <i class='bx bxs-check-circle success' *ngIf="item.a_tiempo" data-bs-toggle="tooltip" data-bs-placement="right" title="A tiempo"></i>
+      </td>
+      <td>{{item.fecha_entrega | date: 'yyyy-MM-dd'}}</td>
+      <td>{{item.cubre_desde | date: 'yyyy-MM-dd'}}</td>
+      <td>{{item.cubre_hasta | date: 'yyyy-MM-dd'}}</td>
+      <td class="td">
+        <button type="button" class="btn btn-success" *ngIf="!item.fecha_entrega" (click)="uploadDocument(item.entidad_id, item.proyecto_id ,item.documento_id, item.fecha_debida)">
+          <i class='bx bx-upload'></i>
+        </button>
+        <button type="button" class="btn btn-primary" *ngIf="item.url_archivo" (click)="viewDocument(item.url_archivo)">
+          <i class='fa fa-file'></i>
+        </button>&nbsp;
+        <button type="button" class="btn btn-danger" *ngIf="item.url_archivo" (click)="deleteDocument(item.url_archivo)">
+          <i class='bx bxs-trash-alt'></i>
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <br>
+  <pagination-controls
+    previousLabel="Anterior"
+    nextLabel="Siguiente"
+    [responsive]="true"
+    (pageChange)="handlePageChange($event)"
+  ></pagination-controls>
+</div>
+

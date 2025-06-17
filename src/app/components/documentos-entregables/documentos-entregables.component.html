@@ -1,0 +1,128 @@
+<br>
+<h1>Documentos Entregables</h1>
+<hr>
+<div class="row">
+  <div class="col-xxl-1 col-xl-1 col-lg-1 col-md-1 col-sm-12">
+    <button type="button" class="btn btn-primary btn-nuevo" (click)="openModal(template)"><i class='fa fa-plus'></i></button>
+  </div>
+</div>
+<hr>
+<div class="row scroll">
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">Frecuencia</th>
+      <th scope="col">Tipo</th>
+      <th scope="col">Nomenclatura</th>
+      <th scope="col">Fecha&nbsp;de&nbsp;creación</th>
+      <th scope="col">Fecha&nbsp;de&nbsp;actualización</th>
+      <th scope="col">Acciones&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let docu of documentosEntregables | paginate : {
+                  id: paginationId,
+                  itemsPerPage: pageSizeDiarias,
+                  currentPage: pageNumberDiarias,
+                  totalItems: totalItemsDiarias
+                };
+          let i = index">
+      <td>{{docu.id}}</td>
+      <td>{{docu.nombre}}</td>
+      <td *ngIf="docu.frecuencia_documento_id">
+        <div *ngFor="let frec of frecuencias">
+          <label *ngIf="frec.id==docu.frecuencia_documento_id">{{frec.frecuencia}}</label>
+        </div>
+      </td>
+      <td *ngIf="docu.tipo_id">
+        <div *ngFor="let tip of tipos">
+          <label *ngIf="tip.id==docu.tipo_id">{{tip.tipo}}</label>
+        </div>
+      </td>
+      <td>{{docu.nomenclatura_nombre_archivo}}</td>
+      <td>{{docu.created_at| date:'y-M-d'}}</td>
+      <td>{{docu.updated_at| date:'y-M-d'}}</td>
+      <td class="accion">
+        <button class="btn btn-success fa fa-edit" (click)="getDocumentosEntregablesById(docu,template)"></button>&nbsp;
+        <button class="btn btn-danger fa fa-trash" (click)="deleteDocumentosEntregables(docu)"></button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<pagination-controls
+  [id]="paginationId"
+  previousLabel="Anterior"
+  nextLabel="Siguiente"
+  [responsive]="true"
+  (pageChange)="handlePageDiariasChange($event)"
+></pagination-controls>
+<ng-template #template>
+  <div class="modal-header modal-large">
+    <h3 class="modal-title pull-left" *ngIf="!documentosId">Nuevo documento</h3>
+    <h3 class="modal-title pull-left" *ngIf="documentosId">Actualizar documento</h3>
+    <button type="button" class="btn btn-default pull-right" aria-label="Cerrar" (click)="modalRef.hide()">
+      <span aria-hidden="true">×</span> Cerrar
+    </button>
+  </div>
+  <div class="modal-body modal-large">
+    <div class="row espace" *ngIf="documentosId">
+      <div class="col-4"><h4 class="form-label">ID:</h4></div>
+      <div class="col-8"><input type="text" class="form-control" value="{{documentosId}}" disabled></div>
+    </div>
+    <div class="row espace">
+      <div class="col-4"><h4 class="form-label">Nombre<label style="color:red">*</label>:</h4></div>
+      <div class="col-8"><input type="text" class="form-control" #docnombre value="{{documentoNombre}}"></div>
+    </div>
+    <div class="row espace">
+      <div class="col-4"><h4 class="form-label">Frecuencia:</h4></div>
+      <div class="col-8">
+        <select class="form-control" #docfrecuencia>
+          <option *ngIf="documentoIdFrecuencia" value="{{documentoIdFrecuencia}}" selected>{{documentonombreFrecuencia}}</option>
+          <option></option>
+          <option *ngFor="let frec of frecuencias" value="{{frec.id}}">{{frec.frecuencia}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="row espace">
+      <div class="col-4"><h4 class="form-label">Tipo:</h4></div>
+      <div class="col-8">
+        <select class="form-control" #doctipo>
+          <option *ngIf="documentoIdTipo" value="{{documentoIdTipo}}" selected>{{documentoNombreTipo}}</option>
+          <option></option>
+          <option *ngFor="let tip of tipos" value="{{tip.id}}">{{tip.tipo}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="row espace">
+      <div class="col-4"><h4 class="form-label">Nomenclatura:</h4></div>
+      <div class="col-8"><input type="text" class="form-control" #docnomenclatura value="{{documentoNomenclatura}}"></div>
+    </div>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:red;font-size:25px">*</span>&nbsp; Campos obligatorios
+  </div>
+  <div class="modal-footer modal-large">
+    <button class="btn btn-success" *ngIf="!documentoId"
+            (click)="addDocumentosEntregables(docnombre.value,
+                                              docfrecuencia.value,
+                                              doctipo.value,
+                                              docnomenclatura.value
+                                            );docnombre.value='';
+                                              docfrecuencia.value='';
+                                              doctipo.value='';
+                                              docnomenclatura.value='';
+      "><i class="fa fa-check"></i> Guardar</button>&nbsp;
+    <button class="btn btn-success" *ngIf="documentoId"
+            (click)="updateDocumentosEntregables(documentoId,
+                                                 docnombre.value,
+                                                 docfrecuencia.value,
+                                                 doctipo.value,
+                                                 docnomenclatura.value
+                                               );docnombre.value='';
+                                                 docfrecuencia.value='';
+                                                 doctipo.value='';
+                                                 docnomenclatura.value='';
+      "><i class="fa fa-check"></i> Actualizar</button>&nbsp;
+  </div>
+</ng-template>

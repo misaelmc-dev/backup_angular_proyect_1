@@ -1,0 +1,11 @@
+.nav-link{
+  margin-top:10px;
+  color:black;
+  font-size:10px;
+}
+.nav-link.active{
+  margin-top:10px;
+  border-top:3px solid #0B3251;
+  color:black;
+  font-size:10px;
+}

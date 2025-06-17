@@ -1,0 +1,91 @@
+<!-- inbox container -->
+<div class="d-flex flex-column flex-grow-1 bg-white">
+  <!-- inbox header -->
+  <div class="flex-grow-0">
+    <!-- inbox title -->
+    <div class="d-flex align-items-center pl-2 pr-3 py-3 pl-sm-3 pr-sm-4 py-sm-4 px-lg-5 py-lg-4  border-faded border-top-0 border-left-0 border-right-0 flex-shrink-0">
+      <!-- button for mobile -->
+      <!--<a href="javascript:void(0);" class="pl-3 pr-3 py-2 d-flex d-lg-none align-items-center justify-content-center mr-2 btn" data-action="toggle" data-class="slide-on-mobile-left-show" data-target="#js-inbox-menu">
+        <i class="fal fa-ellipsis-v h1 mb-0 "></i>
+      </a>-->
+      <!-- end button for mobile -->
+      <h1 class="subheader-title">
+        Nuevo mensaje
+      </h1>
+      <!--<div class="d-flex position-relative ml-auto hidden-lg-down" style="max-width: 23rem;">
+        <i class="fas fa-search position-absolute pos-left fs-lg px-3 py-2 mt-1"></i>
+        <input type="text" class="form-control bg-subtlelight pl-6" placeholder="Filter emails">
+      </div>-->
+    </div>
+    <!-- end inbox title -->
+  </div>
+  <!-- end inbox header -->
+  <!-- inbox message -->
+  <div class="flex-wrap align-items-center flex-grow-1 position-relative bg-white mx-lg-3">
+    <div class=" position-absolute pos-top pos-bottom w-100">
+      <div class="d-flex h-100 flex-column">
+        <div class="px-3">
+          <input [(ngModel)]="para" id="message-to" type="text" placeholder="Para" class="form-control border-top-0 border-left-0 border-right-0 px-0 rounded-0 fs-md mt-2 pr-5" tabindex="2">
+          <!--<a href="javascript:void(0)" class="position-absolute pos-right pos-top mt-3 mr-4" data-action="toggle" data-class="d-block" data-target="#message-to-cc" data-focus="message-to-cc" data-toggle="tooltip" data-original-title="Añadir Cc" data-placement="bottom">Cc</a>-->
+          <input [(ngModel)]="cc" id="message-to-cc" type="text" placeholder="Cc (separe por ;)" class="form-control border-top-0 border-left-0 border-right-0 px-0 rounded-0 fs-md mt-2" tabindex="3">
+          <input [(ngModel)]="subject" type="text" placeholder="Asunto" class="form-control border-top-0 border-left-0 border-right-0 px-0 rounded-0 fs-md mt-2" tabindex="4">
+        </div>
+        <div class="flex-1" >
+          <div #emailBodyDiv id='ake_textarea' class="form-control rounded-0 w-100 h-100 border-0 py-3" contenteditable="true" tabindex="5">
+            <!--<input style="border: none; outline: none;" [(ngModel)]="body" type="textarea" placeholder="Escriba aquí...">-->
+            <br>
+            <br>
+            <div class="d-flex d-column align-items-start mb-3">
+              <!--<img src="img/logo.png" alt="SmartAdmin WebApp" class="mr-3 mt-1">-->
+              <div class="border-left pl-3">
+                <span class="fw-500 fs-lg d-block l-h-n">Gestión Seguridad Social GSS</span>
+                <!--<a href="#" class="mr-1 fs-xl" style="color:#3b5998"><i class="fab fa-facebook-square"></i></a>
+                <a href="#" class="mr-1 fs-xl" style="color:#38A1F3"><i class="fab fa-twitter-square"></i></a>
+                <a href="#" class="mr-1 fs-xl" style="color:#0077B5"><i class="fab fa-linkedin"></i></a>
+                <a href="#" class="mr-1 fs-xl" style="color:#ff0000"><i class="fab fa-youtube-square"></i></a>-->
+              </div>
+            </div>
+            <div class="text-muted fs-nano">
+              ​CONFIDENCIAL. Este mensaje, sus contenidos y adjuntos son confidenciales y solo deben ser para el destinatario. Se prohíbe su exhibición, copia o uso no autorizado. Si recibió este mensaje por error por favor notifíquenos y elimine este mensaje así como cualquier copia.
+            </div>
+          </div>
+        </div>
+        <div class="px-3 py-4 d-flex flex-row align-items-center flex-wrap flex-shrink-0">
+          <a (click)="sendMail()" href="javascript:void(0);" class="btn btn-info mr-3">Enviar</a>
+          <!--<a href="javascript:void(0);" class="btn btn-icon fs-xl mr-1" data-toggle="tooltip" data-original-title="Formatting options" data-placement="top">
+            <i class="fas fa-font color-fusion-300"></i>
+          </a>-->
+          <a (click)="openFileExplorer()" href="javascript:void(0);" class="btn btn-icon fs-xl mr-1" data-toggle="tooltip" data-original-title="Attach files" data-placement="top">
+            <i class="fas fa-paperclip color-fusion-300"></i>
+          </a>
+          <input id="fileInput" type="file" style="display:none" (change)="onFileInputChange($event.target)"> <!--esto es como un placeholder para darle trigger al fileexplorer-->
+          <!--<a href="javascript:void(0);" class="btn btn-icon fs-xl mr-1" data-toggle="tooltip" data-original-title="Insert photo" data-placement="top">
+            <i class="fas fa-camera color-fusion-300"></i>
+          </a>-->
+          <!--<div class="ml-auto">
+            <a href="javascript:void(0);" class="btn btn-icon fs-xl" data-toggle="tooltip" data-original-title="Disregard draft" data-placement="top">
+              <i class="fas fa-trash color-fusion-300"></i>
+            </a>
+            <a href="javascript:void(0);" class="btn btn-icon fs-xl width-1" data-toggle="tooltip" data-original-title="More options" data-placement="top">
+              <i class="fas fa-ellipsis-v-alt color-fusion-300"></i>
+            </a>
+          </div>-->
+          <div *ngFor="let file of attachmentFileList" class="toast m-1 shadow-none show" data-autohide="false">
+            <div class="toast-header">
+              <!--<img src="..." class="rounded mr-2" alt="...">-->
+              <strong class="mr-auto">{{file.name}}</strong>
+              <small>{{file.size | filesize}}</small>
+              <button (click)="deleteFileFromAttachments(file.name)" type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                <span aria-hidden="false">&times;</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- end inbox message -->
+</div>
+<!-- end inbox container -->
+

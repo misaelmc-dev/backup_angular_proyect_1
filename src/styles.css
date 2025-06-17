@@ -1,0 +1,26 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+.poppins {
+  font-family: 'Poppins';
+}
+
+.paginationStyle /deep/ .ngx-pagination .current {
+  z-index: 3;
+  color: #fff;
+  background-color: #886ab5;
+  border-color: #886ab5;
+}
+
+.success {
+  color: #198754;
+}
+.danger {
+  color: #dc3545;
+}
+.red{color:red;}
+.red-s{
+  color:red;
+  font-size:25px;
+}

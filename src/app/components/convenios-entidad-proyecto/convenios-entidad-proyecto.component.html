@@ -1,0 +1,288 @@
+<br>
+<h2 class="titulo">Entidad "{{entidadNombre}}"</h2>
+<h2>Proyecto "{{proyectoNombre}}"</h2>
+<hr>
+<div class="row">
+  <h3>Datos Contractuales</h3>
+</div>
+<div class="row">
+  <div class="col-md-10">
+    <div class="row">
+      <p class="col-4"><b>ID:</b> {{contrato.id}}</p>
+      <p class="col-3"><b>Número de contrato:</b> {{contrato.num_contrato}}</p>
+      <p class="col-3"><b>Monto:</b> {{contrato.monto_contrato | currency:'CAD':'symbol-narrow':'4.2-2'}}</p>
+      <p class="col-2"><b>Estatus: </b>
+        <label> {{contrato.estatus}}</label>
+      </p>
+    </div>
+    <div class="row">
+      <p class="col-4"><b>Fecha de inicio:</b> {{contrato.fecha_desde | date: 'yyyy-MM-dd'}}</p>
+      <p class="col-3"><b>Fecha de término:</b> {{contrato.fecha_hasta | date: 'yyyy-MM-dd'}}</p>
+      <p class="col-3"><b>Fecha de firma:</b> {{contrato.fecha_firma_contrato| date: 'yyyy-MM-dd'}}</p>
+      <p class="col-2"></p>
+    </div>
+    <div class="row">
+      <p class="col-4"><b>Descripción:</b> {{contrato.desc_contrato}}</p>
+      <p class="col-3"><b>Registro de obra:</b> {{contrato.num_reg_obra}}</p>
+      <p class="col-3"><b>Superficie:</b> {{contrato.superf_contratada_m2}}</p>
+      <p class="col-2">
+        <button class="btn btn-success text-white" (click)="openUpdateContrato(templateContrato)"><i class="fa fa-edit"></i></button>&nbsp;
+      </p>
+    </div>
+  </div>
+  <div class="col-md-2" *ngIf="!contrato.archivo_url">
+    <div class="card card-simple">
+      <div class="card-body">
+        <h4 class="card-title">Contrato</h4>
+        <p class="card-text">No tiene contrato.</p>
+        <a class="btn btn-success text-white" (click)="uploadContrato()"><i class="fa fa-upload"></i> Subir</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-2" *ngIf="contrato.archivo_url">
+    <div class="card card-active">
+      <div class="card-body">
+        <h4 class="card-title">Contrato</h4>
+        <p class="card-text">Contrato guardado.</p>
+        <button href="#" class="btn btn-primary text-white" (click)="viewContrato()"><i class="fa fa-eye"></i> Ver</button>&nbsp;
+        <button href="#" class="btn btn-danger" (click)="downContrato()"><i class="fa fa-window-close"></i> Eliminar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<hr>
+<div class="row scroll-div">
+  <div class="col-md-6 table-clasic">
+    <div class="col-md-12 col-md-offset-2 ">
+      <div class="d-flex justify-content-between align-items-center">
+        <h3 class="col-9">Convenios</h3>
+        <button class="btn btn-success" (click)="openAddModal(template)"><i class="fa fa-plus"></i> Agregar</button>
+      </div>
+    </div>
+    <br>
+    <table class="table table-hover">
+      <thead>
+      <tr>
+        <th class="desc">Descripción</th>
+        <th class="fecha">Fecha</th>
+        <th>Archivo</th>
+        <th class="acciones">Acción</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let convenio of convenios">
+        <td><div class="sroll-div">{{convenio.descripcion}}</div></td>
+        <td>{{convenio.created_at | date:'yyyy-MM-dd'}}</td>
+        <td *ngIf="!convenio.archivo_url">
+          <div class="item-check-no">
+            &nbsp;<span class="fa fa-window-close"></span>
+            <label>&nbsp;No&nbsp;</label>
+            <button class="btn btn-success" (click)="uploadConvenios(convenio)"><i class="fa fa-upload"></i></button>
+          </div>
+        </td>
+        <td *ngIf="convenio.archivo_url">
+          <div class="item-check-yes">
+            &nbsp;<span class="fa fa-check-circle"></span>
+            <label>&nbsp;Sí&nbsp;&nbsp;</label>
+            <button class="btn btn-primary text-white" (click)="viewConvenio(convenio)"><i class="fa fa-eye"></i></button>&nbsp;
+            <button class="btn btn-danger"  (click)="downConvenio(convenio)"><i class="fa fa-window-close"></i></button>
+          </div>
+        </td>
+        <td>
+          <button class="btn btn-success text-white" (click)="openUpdateModal(convenio,template)"><i class="fa fa-edit"></i></button>&nbsp;
+          <button class="btn btn-danger" (click)="deleteConvenio(convenio)"><i class="fa fa-trash-alt"></i></button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="col-md-6 table-clasic">
+    <div class="col-md-12 col-md-offset-2 ">
+      <div class="d-flex justify-content-between align-items-center">
+        <h3 class="col-9">Observaciones</h3>
+        <button class="btn btn-success" (click)="openAddObservacion(templateObservaciones)"><i class="fa fa-plus"></i> Agregar</button>
+      </div>
+    </div>
+    <br>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th class="desc">Observación</th>
+          <th class="acciones">Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let observa of observaciones">
+          <td><div class="sroll-div">{{observa.observacion}}</div></td>
+          <td>
+            <button class="btn btn-success text-white" (click)="openUpdateObservacion(observa,templateObservaciones)"><i class="fa fa-edit"></i></button>&nbsp;
+            <button class="btn btn-danger" (click)="deleteObservacion(observa)"><i class="fa fa-trash-alt"></i></button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<ng-template #template>
+  <div class="modal-header">
+    <h3 class="modal-title pull-left" *ngIf="!convenioId">Nuevo convenio</h3>
+    <h3 class="modal-title pull-left" *ngIf="convenioId">Actualizar convenio</h3>
+    <button type="button" class="btn btn-default pull-right" aria-label="Cerrar" (click)="closeModal()">
+      <span aria-hidden="true">×</span> Cerrar
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row espace" *ngIf="convenioId">
+      <div class="col-4"><h4 class="form-label">ID:</h4></div>
+      <div class="col-8"><input type="text" class="form-control" value="{{convenioId}}" disabled></div>
+    </div>
+    <div class="row espace">
+      <div class="col-4"><h4 class="form-label">Entidad:</h4></div>
+      <div class="col-8"><input type="text" class="form-control" value="{{convenioEntidad}}" disabled></div>
+    </div>
+    <div class="row espace">
+      <div class="col-4"><h4 class="form-label">Proyecto:</h4></div>
+      <div class="col-8"><input type="text" class="form-control" value="{{convenioProyecto}}" disabled></div>
+    </div>
+    <div class="row espace">
+      <div class="col-4"><h4 class="form-label">Descripción:</h4></div>
+      <div class="col-8"><textarea rows="6" class="form-control" #convenioDes value="{{convenioDescripcion}}">{{convenioDescripcion}}</textarea></div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-success" *ngIf="!convenioId"
+            (click)="addConvenio(convenioDes.value);convenioDes.value='';
+      "><i class="fa fa-check"></i> Guardar</button>&nbsp;
+    <button class="btn btn-success" *ngIf="convenioId"
+            (click)="updateConvenio(convenioId,convenioDes.value);convenioDes.value='';
+      "><i class="fa fa-check"></i> Actualizar</button>&nbsp;
+  </div>
+</ng-template>
+<ng-template #templateContrato>
+  <div class="modal-header modal-large">
+    <h3 class="modal-title pull-left">Actualizar Contrato</h3>
+    <button type="button" class="btn btn-default pull-right" aria-label="Cerrar" (click)="closeModal()">
+      <span aria-hidden="true">×</span> Cerrar
+    </button>
+  </div>
+  <div class="modal-body modal-large">
+    <div class="row espace" >
+      <div class="col-5"><h4 class="form-label">ID:</h4></div>
+      <div class="col-7"><input type="text" class="form-control" value="{{contrato.id}}" disabled></div>
+    </div>
+    <div class="row espace">
+      <div class="col-5"><h4 class="form-label">Número de contrato:</h4></div>
+      <div class="col-7"><input type="text" class="form-control" #contratoNum value="{{contrato.num_contrato}}"></div>
+    </div>
+    <div class="row espace">
+      <div class="col-5"><h4 class="form-label">Fecha de inicio:</h4></div>
+      <div class="col-7">
+        <input type="text" autocomplete="off" bsDatepicker
+               [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', showWeekNumbers: false, isAnimated: true, containerClass: 'theme-dark-blue'}"
+               placeholder="{{contrato.fecha_desde| date: 'yyyy-MM-dd'}}" #contratoFI value="{{contrato.fecha_desde| date: 'yyyy-MM-dd'}}" class="form-control fecha-class" />
+
+      </div>
+    </div>
+    <div class="row espace">
+      <div class="col-5"><h4 class="form-label">Fecha de término:</h4></div>
+      <div class="col-7">
+        <input type="text" autocomplete="off" bsDatepicker
+               [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', showWeekNumbers: false, isAnimated: true, containerClass: 'theme-dark-blue'}"
+               placeholder="{{contrato.fecha_hasta| date: 'yyyy-MM-dd'}}" #contratoFF value="{{contrato.fecha_hasta| date: 'yyyy-MM-dd'}}" class="form-control fecha-class" />
+      </div>
+    </div>
+    <div class="row espace">
+      <div class="col-5"><h4 class="form-label">Fecha de firma:</h4></div>
+      <div class="col-7">
+        <input type="text" autocomplete="off" bsDatepicker
+               [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', showWeekNumbers: false, isAnimated: true, containerClass: 'theme-dark-blue'}"
+               placeholder="{{contrato.fecha_firma_contrato| date: 'yyyy-MM-dd'}}" #contratoFFI value="{{contrato.fecha_firma_contrato| date: 'yyyy-MM-dd'}}" class="form-control fecha-class" />
+      </div>
+    </div>
+    <div class="row espace">
+      <div class="col-5"><h4 class="form-label">Monto:</h4></div>
+      <div class="col-7"><input type="text" class="form-control" #contratoMonto value="{{contrato.monto_contrato}}"></div>
+    </div>
+    <div class="row espace">
+      <div class="col-5"><h4 class="form-label">Registro de obras:</h4></div>
+      <div class="col-7"><input type="text" class="form-control" #contratoReg value="{{contrato.num_reg_obra}}"></div>
+    </div>
+    <div class="row espace">
+      <div class="col-5"><h4 class="form-label">Superficie:</h4></div>
+      <div class="col-7"><input type="text" class="form-control" #contratoSup value="{{contrato.superf_contratada_m2}}"></div>
+    </div>
+    <div class="row espace">
+      <div class="col-5"><h4 class="form-label">Estatus:</h4></div>
+      <div class="col-7">
+        <select class="form-control" #contratoEstatus>
+          <option></option>
+          <ng-container *ngFor="let estatus of estatusList">
+            <option *ngIf="contrato.estatus==estatus.name" value="{{estatus.name}}" selected>{{estatus.name}}</option>
+            <option *ngIf="contrato.estatus!=estatus.name" value="{{estatus.name}}">{{estatus.name}}</option>
+          </ng-container>
+        </select>
+      </div>
+    </div>
+    <div class="row espace">
+      <div class="col-5"><h4 class="form-label">Descripción:</h4></div>
+      <div class="col-7"><textarea rows="3" class="form-control" #contratoDes value="{{contrato.desc_contrato}}">{{contrato.desc_contrato}}</textarea></div>
+    </div>
+  </div>
+  <div class="modal-footer modal-large">
+    <button class="btn btn-success"
+            (click)="updateContrato(contratoFI.value,
+                                    contratoFF.value,
+                                    contratoNum.value,
+                                    contratoMonto.value,
+                                    contratoFFI.value,
+                                    contratoDes.value,
+                                    contratoReg.value,
+                                    contratoSup.value,
+                                    contratoEstatus.value
+                                  );contratoFI.value='';
+                                    contratoFF.value='';
+                                    contratoNum.value='';
+                                    contratoMonto.value='';
+                                    contratoFFI.value='';
+                                    contratoDes.value='';
+                                    contratoReg.value='';
+                                    contratoSup.value='';
+                                    contratoEstatus.value='';
+      "><i class="fa fa-check"></i> Actualizar</button>&nbsp;
+  </div>
+</ng-template>
+<ng-template #templateObservaciones>
+  <div class="modal-header">
+    <h3 class="modal-title pull-left" *ngIf="!observacionId">Nueva observación</h3>
+    <h3 class="modal-title pull-left" *ngIf="observacionId">Actualizar observación</h3>
+    <button type="button" class="btn btn-default pull-right" aria-label="Cerrar" (click)="closeModal()">
+      <span aria-hidden="true">×</span> Cerrar
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row espace" *ngIf="observacionId">
+      <div class="col-4"><h4 class="form-label">ID:</h4></div>
+      <div class="col-8"><input type="text" class="form-control" value="{{observacionId}}" disabled></div>
+    </div>
+    <div class="row espace">
+      <div class="col-4"><h4 class="form-label">Entidad:</h4></div>
+      <div class="col-8"><input type="text" class="form-control" value="{{convenioEntidad}}" disabled></div>
+    </div>
+    <div class="row espace">
+      <div class="col-4"><h4 class="form-label">Proyecto:</h4></div>
+      <div class="col-8"><input type="text" class="form-control" value="{{convenioProyecto}}" disabled></div>
+    </div>
+    <div class="row espace">
+      <div class="col-4"><h4 class="form-label">Observación:</h4></div>
+      <div class="col-8"><textarea rows="6" class="form-control" #observacion value="{{observacionObs}}">{{observacionObs}}</textarea></div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-success" *ngIf="!observacionId"
+            (click)="addObservacion(observacion.value);observacion.value='';
+      "><i class="fa fa-check"></i> Guardar</button>&nbsp;
+    <button class="btn btn-success" *ngIf="observacionId"
+            (click)="updateObservacion(observacionId,observacion.value);observacion.value='';
+      "><i class="fa fa-check"></i> Actualizar</button>&nbsp;
+  </div>
+</ng-template>

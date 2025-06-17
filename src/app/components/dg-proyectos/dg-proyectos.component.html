@@ -1,0 +1,56 @@
+<!--
+<br>
+<h1>Datos Generales de Proyecto</h1>
+<br>
+
+<form action="#" style="width: 50%">
+  <fieldset>
+    <div class="input-group mb-3">
+      <label class="input-group-text" for="entidadesSelect">Entidad:</label>
+      <select class="form-select" id="entidadesSelect" [(ngModel)]="selectedEntidad" [ngModelOptions]="{standalone: true}">
+        <option></option>
+        <option [value]="item.id" *ngFor="let item of entidades">{{item.nombre}}</option>
+      </select>
+    </div>
+  </fieldset>
+</form>
+
+<br>
+<h4>Datos Generales de la obra</h4>
+<br>
+
+<form action="#" style="width: 25%">
+  <fieldset>
+    <div class="input-group mb-3">
+      <label class="input-group-text" for="filtro_input">Filtro</label>
+      <input id="filtro_input" type="text" class="form-control" placeholder="Criterio de busqueda">
+      <button type="button" class="btn btn-primary">Buscar</button>
+    </div>
+  </fieldset>
+</form>
+
+<table class="table">
+  <thead>
+  <tr>
+    <th scope="col">Nombre</th>
+    <th scope="col">Tipo</th>
+    <th scope="col">Clase</th>
+    <th scope="col">Monto</th>
+    <th scope="col">Ubicacion</th>
+    <th scope="col">Cod Biotine</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr  *ngFor="let item of dataSource">
+    <th scope="row">{{item.nombre}}</th>
+    <td>{{item.tipo}}</td>
+    <td>{{item.clase}}</td>
+    <td>{{item.monto}}</td>
+    <td>{{item.ubicacion}}</td>
+    <td>{{item.cod_biotime}}</td>
+  </tr>
+  </tbody>
+</table>
+-->
+
+<p>dg-proyecto works!</p>

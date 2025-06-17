@@ -1,0 +1,23 @@
+.columna{
+  min-width: 150px;
+}
+.center-all{
+  text-align: center;
+}
+.todos{
+  padding:10px;
+  margin-top:-10px;
+  margin-bottom:5px;
+}
+.check-free{
+  border:1px solid;
+  width:35px;
+  heght:35px;
+}
+@media (max-width:576px){
+  .scroll {
+    width: 400px;
+    overflow-x: scroll;
+    scroll-behavior: smooth;
+  }
+}

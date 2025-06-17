@@ -1,0 +1,16 @@
+<br>
+<h1>Control de contratos > {{title}}</h1>
+<nav>
+  <div class="nav nav-tabs" id="nav-tab" role="tablist">
+    <button (click)="onMatrizSeleccionada()" class="nav-link active" id="nav-matriz-tab" data-bs-toggle="tab" data-bs-target="#nav-matriz" type="button" role="tab" aria-controls="nav-matriz" aria-selected="true"><h5>Matriz de control</h5></button>
+    <button (click)="onCumplimientoSeleccionada()" class="nav-link" id="nav-cumplimiento-tab" data-bs-toggle="tab" data-bs-target="#nav-cumplimiento" type="button" role="tab" aria-controls="nav-cumplimiento" aria-selected="false"><h5>Resumen de cumplimiento</h5></button>
+  </div>
+</nav>
+<div class="tab-content" id="nav-tabContent">
+  <div class="tab-pane fade show active" id="nav-matriz" role="tabpanel" aria-labelledby="nav-matriz-tab">
+    <app-control-contratos-matriz *ngIf="showMatriz" (eventClean)="cleanTarget($event)"></app-control-contratos-matriz>
+  </div>
+  <div class="tab-pane fade" id="nav-cumplimiento" role="tabpanel" aria-labelledby="nav-cumplimiento-tab">
+    <app-control-contratos-cumplimiento *ngIf="showCumplimiento" (eventClean)="cleanTarget($event)"></app-control-contratos-cumplimiento>
+  </div>
+</div>

@@ -1,0 +1,16 @@
+.pagination-center{padding-left:30%;}
+.accion{width:165px}
+.espace{
+  margin:10px;
+}
+.row-modal{
+  margin-right:5px;
+}
+@media (max-width:576px){
+  .scroll{
+    width:390px;
+    overflow-x: scroll;
+    scroll-behavior: smooth;
+  }
+  .pagination-center{padding-left:0%;}
+}

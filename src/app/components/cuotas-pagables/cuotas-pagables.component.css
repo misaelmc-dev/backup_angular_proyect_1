@@ -1,0 +1,18 @@
+.input-search{border:3px solid #006400FF;}
+.btn-search{width:80px;}
+.btn-nuevo{width:50px;}
+.espace{margin: 10px;}
+.form-label{
+  margin-top:5px;
+}
+@media (max-width:576px){
+  .scroll{
+    width:450px;
+    overflow-x: scroll;
+    scroll-behavior: smooth;
+  }
+  .btn-nuevo{
+    width:50px;
+    margin-top:10px;
+  }
+}

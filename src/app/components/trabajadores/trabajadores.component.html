@@ -1,0 +1,277 @@
+<br>
+<h1>Trabajadores</h1>
+<hr>
+<div class="row">
+  <div class="col-md">
+    <button type="button" class="btn btn-success" (click)="addTrabajdorModal(template)"><i class="fa fa-plus"></i></button>&nbsp;&nbsp;
+  </div>
+  <div class="col-md d-flex flex-row-reverse">
+    <button type="button" class="btn btn-danger button-magen" (click)="cleanFilters()"> Limpiar filtros &nbsp;<i class="bx bx-filter-alt"></i></button>&nbsp;&nbsp;
+    <button type="button" class="btn btn-success button-magen" (click)="exportToExcel()">Exportar Excel &nbsp;<i class='fa fa-download'></i></button>&nbsp;&nbsp;
+    <label class="btn btn-primary button-magen circle" for="fichero" title="Subir archivo Excel .SUA para actualizar los trabajadores" style="margin-bottom:-2px">Subir con Excel .SUA &nbsp;<i class='fa fa-upload'></i></label>
+    <input id="fichero" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" (change)="extractFileFromUpload($event)">
+  </div>
+</div>
+<br>
+<div class="row">
+  <div class="col-lg col-md col-sm-12">
+    <div class="input-group">
+      <input type="text" class="form-control" placeholder="Buscar..." aria-describedby="basic-addon1" [(ngModel)]="searchCriterio" [ngModelOptions]="{standalone: true}">
+      <button type="button" class="btn btn-success" (click)="filtrarTrabajadores()">
+        <i class='bx bx-search'></i>
+      </button>
+    </div>
+  </div>
+  <div class="col-lg col-md col-sm-12">
+    <div class="input-group">
+      <label class="input-group-text">Entidad:</label>
+      <select class="form-select" [(ngModel)]="selectedEntidad" [ngModelOptions]="{standalone: true}" (change)='getTrabajadoresByEntidad()'>
+        <ng-container *ngIf="numeroEntidades">
+          <option *ngFor="let entidad of entidades" value="{{entidad.id}}" selected="{{selected}}">{{entidad.nombre}}</option>
+        </ng-container>
+        <ng-container *ngIf="!numeroEntidades">
+          <option></option>
+          <ng-container *ngFor="let entidad of entidades">
+            <ng-container *ngIf="entidad.nombre">
+              <option *ngIf="selectedEntidad==entidad.id" value="{{entidad.id}}" selected="{{selected}}">{{entidad.nombre}}</option>
+              <option *ngIf="selectedEntidad!=entidad.id" value="{{entidad.id}}">{{entidad.nombre}}</option>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </select>
+    </div>
+  </div>
+  <div class="col-lg col-md col-sm-12">
+    <div class="input-group" >
+      <label class="input-group-text">Proyectos:</label>
+      <select class="form-select" [(ngModel)]="selectedProyecto" [ngModelOptions]="{standalone: true}" (change)='getTrabajadorByProyecto()'>
+        <ng-container *ngIf="numeroProyectos">
+          <option *ngFor="let proyecto of proyectos" value="{{proyecto.id}}" selected="{{selected}}">{{proyecto.nombre}}</option>
+        </ng-container>
+        <ng-container *ngIf="!numeroProyectos">
+          <option></option>
+          <ng-container *ngFor="let proyecto of proyectos">
+            <ng-container *ngIf="proyecto.nombre">
+              <option *ngIf="selectedProyecto==proyecto.id" value="{{proyecto.id}}" selected="{{selected}}">{{proyecto.nombre}}</option>
+              <option *ngIf="selectedProyecto!=proyecto.id" value="{{proyecto.id}}">{{proyecto.nombre}}</option>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </select>
+    </div>
+  </div>
+</div>
+<br>
+<div class="row scroll">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Apellidos</th>
+        <th>Fecha&nbsp;Nacimiento</th>
+        <th>Género</th>
+        <th>Fecha&nbsp;de&nbsp;registro</th>
+        <th>Entidad</th>
+        <th>Cargo</th>
+        <th class="accion">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let trab of trabajadores | paginate : {
+                  id: paginationId,
+                  itemsPerPage: 10,
+                  currentPage: 1
+                }; let i = index">
+        <td>{{trab.id}}</td>
+        <td>{{trab.nombre}}</td>
+        <td>{{trab.apellidos}}</td>
+        <td>{{trab.fecha_nacimiento | date: 'dd-MM-yyyy'}}</td>
+        <td>
+          <ng-container *ngIf="trab.genero=='m'">
+            Masculino
+          </ng-container>
+          <ng-container *ngIf="trab.genero=='f'">
+            Femenino
+          </ng-container>
+        </td>
+        <td>{{trab.created_at | date: 'dd-MM-yyyy'}}</td>
+        <td>{{trab.entidades[0].nombre}}</td>
+        <td>
+          <ng-container *ngIf="trab.entidades[0].categorias[0]">
+            {{trab.entidades[0].categorias[0].nombre}}
+          </ng-container>
+        </td>
+        <td>
+          <button class="btn btn-primary fa fa-eye" routerLink="/trabajador-detalle/{{trab.id}}"></button>&nbsp;
+          <button class="btn btn-success fa fa-edit" (click)="updateTrabajadorModal(template,trab)"></button>&nbsp;
+          <button class="btn btn-danger fa fa-trash" (click)="deleteTrabajador(deleteModal,trab)"></button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <br>
+  <pagination class="pagination-center" *ngIf="paginationVisible"
+    [id]="paginationId"
+    [boundaryLinks]="true"
+    [directionLinks]="true"
+    [totalItems]="contentArray.length"
+    [itemsPerPage]="10"
+    [maxSize]="5"
+    firstText="Inicio"
+    previousText="<< Anterior"
+    nextText="Siguiente >>"
+    lastText="Final"
+    (pageChanged)="pageChanged($event)">
+  </pagination>
+</div>
+<ng-template #template>
+  <div class="modal-header modal-large">
+    <h3 class="modal-title pull-left" *ngIf="!trabajadorId">Nuevo Trabajador</h3>
+    <h3 class="modal-title pull-left" *ngIf="trabajadorId">Actualizar Trabajador</h3>
+    <button type="button" class="btn btn-default pull-right" aria-label="Cerrar" (click)="closeModal()">
+      <span aria-hidden="true">×</span> Cerrar
+    </button>
+  </div>
+  <div class="modal-body modal-large">
+    <div class="row">
+      <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="row espace" *ngIf="trabajadorId">
+          <div class="col-6"><h4 class="form-label">Id:</h4></div>
+          <div class="col-6"><input type="text" class="form-control" value="{{trabajadorId}}" disabled></div>
+        </div>
+        <div class="row espace">
+          <div class="col-6"><h4 class="form-label">Nombre<label class="red">*</label>:</h4></div>
+          <div class="col-6"><input type="text" class="form-control" [(ngModel)]="trabajadorNombre"></div>
+        </div>
+        <div class="row espace">
+          <div class="col-6"><h4 class="form-label">Apellidos<label class="red">*</label>:</h4></div>
+          <div class="col-6"><input type="text" class="form-control" [(ngModel)]="trabajadorApellidos"></div>
+        </div>
+        <div class="row espace">
+          <div class="col-6"><h4 class="form-label">RFC:</h4></div>
+          <div class="col-6"><input type="text" class="form-control" [(ngModel)]="trabajadorRfc"></div>
+        </div>
+        <div class="row espace">
+          <div class="col-6"><h4 class="form-label">CURP:</h4></div>
+          <div class="col-6"><input type="text" class="form-control" [(ngModel)]="trabajadorCurp"></div>
+        </div>
+        <div class="row espace">
+          <div class="col-6"><h4 class="form-label">NSS:</h4></div>
+          <div class="col-6"><input type="text" class="form-control" [(ngModel)]="trabajadorNss"></div>
+        </div>
+        <div class="row espace">
+          <div class="col-6"><h4 class="form-label">Fecha de nacimiento:</h4></div>
+          <div class="col-6">
+            <input type="text" autocomplete="off" bsDatepicker
+                   [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', showWeekNumbers: false, isAnimated: true, containerClass: 'theme-dark-blue' }"
+                   placeholder="Fecha" [(ngModel)]="trabajadorFechaNacimiento" class="form-control fecha-class" />
+          </div>
+        </div>
+        <div class="row espace">
+          <div class="col-6"><h4 class="form-label">Género:</h4></div>
+          <div class="btn-group col-6" *ngIf="!trabajadorGenero"><button class="btn btn-primary">Masculino</button><button class="btn btn-default" (click)="changeGenero()">Femenino</button></div>
+          <div class="btn-group col-6" *ngIf="trabajadorGenero"><button class="btn btn-default" (click)="changeGenero()">Masculino</button><button class="btn btn-primary">Femenino</button></div>
+        </div>
+        <div class="row espace">
+          <div class="col-6"><h4 class="form-label">Correo electrónico:</h4></div>
+          <div class="col-6">
+            <input type="email" class="form-control" placeholder="Ejemplo: usuario@gmail.com"
+                   [(ngModel)]="trabajadorCorreo" name="primaryEmail"  email #prmEmail="ngModel">
+            <div *ngIf="prmEmail.errors?.email" class="red">Correo electrónico no válido. </div>
+          </div>
+        </div>
+        <div class="row espace">
+          <div class="col-6"><h4 class="form-label">Teléfono:</h4></div>
+          <div class="col-6"><input type="number" class="form-control" [(ngModel)]="trabajadorTelefono"></div>
+        </div>
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-12">
+        <div class="row espace">
+          <div class="col-6"><h4 class="form-label">Domicilio:</h4></div>
+          <div class="col-6"><input type="text" class="form-control" [(ngModel)]="trabajadorDomicilio"></div>
+        </div>
+        <div class="row espace">
+          <div class="col-6"><h4 class="form-label">Persona de contacto:</h4></div>
+          <div class="col-6"><input type="text" class="form-control" [(ngModel)]="trabajadorPersonaContacto"></div>
+        </div>
+        <div class="row espace">
+          <div class="col-6"><h4 class="form-label">Teléfono de contacto:</h4></div>
+          <div class="col-6"><input type="number" class="form-control" [(ngModel)]="trabajadorTelefonoContact"></div>
+        </div>
+        <div class="row espace">
+          <div class="col-6"><h4 class="form-label">Entidad<label class="red">*</label>:</h4></div>
+          <div class="col-6">
+            <select *ngIf="!trabajadorId" class="form-select" [(ngModel)]="trabajadorEntidad" >
+              <option *ngFor="let entidad of listEntidades" value="{{entidad.id}}">{{entidad.nombre}}</option>
+            </select>
+            <select *ngIf="trabajadorId" class="form-select" [(ngModel)]="trabajadorEntidad" disabled>
+              <option *ngFor="let entidad of listEntidades" value="{{entidad.id}}">{{entidad.nombre}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="row espace">
+          <div class="col-6"><h4 class="form-label">Fecha de alta<label class="red">*</label>:</h4></div>
+          <div class="col-6">
+            <input type="text" autocomplete="off" bsDatepicker
+                   [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', showWeekNumbers: false, isAnimated: true, containerClass: 'theme-dark-blue' }"
+                   placeholder="Fecha" [(ngModel)]="entidadFechaAlta" class="form-control fecha-class" />
+          </div>
+        </div>
+        <div class="row espace">
+          <div class="col-6"><h4 class="form-label">SBC:</h4></div>
+          <div class="col-6"><input type="number" class="form-control" [(ngModel)]="entidadSueldo"></div>
+        </div>
+        <div class="row espace">
+          <div class="col-6"><h4 class="form-label">Número de clínica IMSS:</h4></div>
+          <div class="col-6"><input type="text" class="form-control" [(ngModel)]="entidadAltaIMSS"></div>
+        </div>
+        <div class="row espace">
+          <div class="col-6"><h4 class="form-label">Cargo:</h4></div>
+          <div class="col-6">
+            <select class="form-select" [(ngModel)]="trabajadorCategoria">
+              <option *ngFor="let categoria of listCategorias" value="{{categoria.id}}">{{categoria.nombre}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer modal-large">
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="red-s">*</span>&nbsp; Campos obligatorios &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button class="btn btn-success" (click)="addTrabajador()" *ngIf="!trabajadorId"><i class="fa fa-save"></i> Guardar</button>
+    <button class="btn btn-success" (click)="updateTrabajador()" *ngIf="trabajadorId"><i class="fa fa-save"></i> Actualizar</button>
+  </div>
+</ng-template>
+<ng-template #deleteModal>
+  <div class="modal-header">
+    <h3 class="modal-title pull-left">Baja de trabajador</h3>
+    <button type="button" class="btn btn-default pull-right" aria-label="Cerrar" (click)="closeModal()">
+      <span aria-hidden="true">×</span> Cerrar
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row row-modal">
+        <div class="row espace">
+          <h4 class="form-label">Fecha de baja<span class="red">*</span>&nbsp;:</h4>
+          <input type="text" autocomplete="off" bsDatepicker
+            [bsConfig]="{ dateInputFormat: 'YYYY-MM-DD', showWeekNumbers: false, isAnimated: true, containerClass: 'theme-dark-blue' }"
+            [(ngModel)]="trabajadorFechaBaja" class="form-control fecha-class" />
+        </div>
+        <div class="row espace">
+          <h4 class="form-label">Motivo de baja<span class="red">*</span>&nbsp;:</h4>
+          <textarea rows="6" class="form-control" [(ngModel)]="trabajadorMotivoBaja" ></textarea>
+        </div>
+        <div class="row espace">
+          <h4 class="form-label">Selecciona Documento de baja:</h4>
+          <input type="file" accept="application/pdf,application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          aria-label="Subir documento baja" class="form-control-file" (change)="extractFileFromEvent($event)">
+        </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="red-s">*</span>&nbsp; Campos obligatorios &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button class="btn btn-danger" (click)="registrarBaja()"><i class="fa fa-file"></i> Registrar de baja</button>
+  </div>
+</ng-template>
+

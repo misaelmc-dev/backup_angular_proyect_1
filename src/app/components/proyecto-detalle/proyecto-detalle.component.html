@@ -1,0 +1,91 @@
+<br>
+<h1>Detalles del Proyecto "{{proyectoNombre}}"</h1>
+<hr>
+<div class="row">
+  <div class="col-sm"><b>ID: </b><label>{{proyectoId}}</label></div>
+  <div class="col-sm"><b>Nombre:&nbsp;</b><label>{{proyectoNombre}}</label></div>
+  <div class="col-sm"><b>Registro: </b><label>{{proyectoRegistro}}</label></div>
+  <div class="col-sm"><b>Superficie: </b><label>{{proyectoSuperficie}}</label></div>
+</div>
+<div class="row">
+  <div class="col-sm"><b>Propietario: </b><label>{{proyectoPropietario}}</label></div>
+  <div class="col-sm"><b>Monto: </b><label>{{proyectoMonto}}</label></div>
+  <div class="col-sm"><b>Fecha de inicio: </b><label>{{proyectoFI| date:'y-M-d'}}</label></div>
+  <div class="col-sm"><b>Fecha final: </b><label>{{proyectoFF| date:'y-M-d'}}</label></div>
+</div>
+<div class="row">
+  <div class="col-sm"><b>Ubicación: </b><label>{{proyectoUbicacion}}</label></div>
+  <div class="col-sm"><b>Código Biotime: </b><label>{{proyectoCodigo}}</label></div>
+  <div class="col-sm"><b>Tipo: </b><label>{{proyectoTipoNombre}}</label></div>
+  <div class="col-sm"></div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-sm-6">
+    <br>
+    <div class="row col-md-offset-2 espace">
+      <div class="d-flex justify-content-between align-items-center">
+        <label class="col-md-1 col-sm-0"></label>
+        <h3 class="col-md-7 col-sm-8">Entidades Ejecutoras</h3>
+        <div class="col-md-3 col-sm-4">
+          <button class="btn btn-success" (click)="openAddModal(template)"><i class="fa fa-plus"></i> Agregar</button>
+        </div>
+        <label class="col-md-2"></label>
+      </div>
+    </div>
+    <br>
+    <div class="row espace" *ngFor="let entidad of entidadesProyecto">
+      <label class="col-md-1 "></label>
+      <label class="col-md-7 col-7 btn btn-default proyecto-item">{{entidad.nombre}}</label>
+      <div class="col-md-2 col-3 acciones">
+        <button class="btn btn-primary" routerLink="/contrato-detalle/{{entidad.id}}/{{proyectoId}}"><i class="fa fa-eye"></i></button>&nbsp;
+        <button class=" btn btn-danger" (click)="eliminarEntidadToProyecto(entidad.id,proyectoId);"><i class="fa fa-trash"></i></button>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 borde-left">
+    <!--
+    <br>
+    <div class="row espace">
+      <div class="col-1"></div>
+      <h3 class="col-7">Trabajadores</h3>
+      <div class="col-4">
+        <button type="button" class="btn btn-success"><i class="fa fa-plus"></i> Asignar</button>
+      </div>
+    </div>
+    <br>
+    <div class="row espace" *ngFor="let trabajador of trabajadores">
+      <label class="col-1"></label>
+      <label class="col-8 btn btn-default proyecto-item">{{trabajador.nombre}} {{trabajador.apellidos}}</label>&nbsp;
+      <div class="col-1">
+        <button class="btn btn-danger"><i class="fa fa-trash"></i></button>
+      </div>
+    </div>
+    <br>
+    -->
+  </div>
+</div>
+<ng-template #template>
+  <div class="modal-header modal-large">
+    <h3 class="modal-title pull-left" *ngIf="!entidadId">Asignar entidad</h3>
+    <h3 class="modal-title pull-left" *ngIf="entidadId">Actualizar asignación</h3>
+    <button type="button" class="btn btn-default pull-right" aria-label="Cerrar" (click)="modalRef.hide()">
+      <span aria-hidden="true">×</span> Cerrar
+    </button>
+  </div>
+  <div class="modal-body modal-large">
+    <div class="row espace">
+      <div class="col-4"><h4 class="form-label">Entidades:</h4></div>
+      <div class="col-8">
+        <select class="form-control" #entiid>
+          <option></option>
+          <option *ngFor="let enti of entidadesDisponibles" value="{{enti.id}}">{{enti.nombre}}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer modal-large">
+    <button class="btn btn-success" *ngIf="!entidadId" (click)="asignarEntidadToProyecto(entiid.value,proyectoId);entiid.value='';"><i class="fa fa-check"></i> Asignar</button>&nbsp;
+    <button class="btn btn-success" *ngIf="entidadId" ><i class="fa fa-check"></i> Actualizar</button>&nbsp;
+  </div>
+</ng-template>

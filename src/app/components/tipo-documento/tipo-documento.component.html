@@ -1,0 +1,81 @@
+<br>
+<h1>Tipos de Documento</h1>
+<hr>
+<div class="row">
+  <div class="col-xxl-1 col-xl-1 col-lg-1 col-md-1 col-sm-12">
+    <button type="button" class="btn btn-primary btn-nuevo" (click)="openModal(template)"><i class='fa fa-plus'></i></button>
+  </div>
+</div>
+<hr>
+<div class="row scroll">
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Tipo de Documento</th>
+      <th scope="col">Fecha de creación</th>
+      <th scope="col">Última actualización</th>
+      <th scope="col">Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let tipo of tipodocumento | paginate : {
+                  id: paginationId,
+                  itemsPerPage: pageSizeDiarias,
+                  currentPage: pageNumberDiarias,
+                  totalItems: totalItemsDiarias
+                };
+          let i = index">
+      <td>{{tipo.id}}</td>
+      <td>{{tipo.tipo}}</td>
+      <td>{{tipo.created_at | date:'y-M-d h:mm a'}}</td>
+      <td>{{tipo.updated_at | date:'y-M-d h:mm a'}}</td>
+      <td class="accion">
+          <span>
+            <button class="btn btn-success fa fa-edit" (click)="getTipoDocumentoById(tipo,template)"></button>&nbsp;
+            <button class="btn btn-danger fa fa-trash" (click)="deleteProyectosTipos(tipo)"></button>
+          </span>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<pagination-controls
+  [id]="paginationId"
+  previousLabel="Anterior"
+  nextLabel="Siguiente"
+  [responsive]="true"
+  (pageChange)="handlePageDiariasChange($event)"
+></pagination-controls>
+<ng-template #template>
+  <div class="modal-header">
+    <h3 class="modal-title pull-left">Tipo de Documento</h3>
+    <button type="button" class="btn btn-default pull-right" aria-label="Cerrar" (click)="modalRef.hide()">
+      <span aria-hidden="true">×</span> Cerrar
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="row espace" *ngIf="tipoDocumentoId">
+      <div class="col-md-2">
+        <h4 class="control-label">ID: </h4>
+      </div>
+      <div class="col-md-10">
+        <input type="text" class="form-control" value="{{tipoDocumentoId}}" disabled>
+      </div>
+    </div>
+    <div class="row espace">
+      <div class="col-md-3">
+        <h4 class="control-label">Tipo<label style="color:red">*</label>: </h4>
+      </div>
+      <div class="col-md-9">
+        <input type="text" class="form-control" #tipodoc value="{{tipoDocumentoTipo}}">
+      </div>
+    </div>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:red;font-size:25px">*</span>&nbsp; Campos obligatorios
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-success" *ngIf="!tipoDocumentoId" (click)="addTiposDocumentos(tipodoc.value);tipodoc.value='';
+      "><i class="fa fa-check"></i> Guardar</button>&nbsp;
+    <button class="btn btn-success" *ngIf="tipoDocumentoId" (click)="updateTiposDocumentos(tipoDocumentoId,tipodoc.value);tipodoc.value='';"><i class="fa fa-check"></i> Actualizar</button>&nbsp;
+  </div>
+</ng-template>

@@ -1,0 +1,20 @@
+.modal-large{
+  width:150%;
+  margin-left:-25%;
+  background-color: white;
+  position: relative;
+}
+.espace{
+ margin:10px
+}
+@media (max-width:576px){
+  .scroll{
+    width:450px;
+    overflow-x: scroll;
+    scroll-behavior: smooth;
+  }
+  .modal-large{
+    width:100%;
+    margin-left:0%;
+  }
+}

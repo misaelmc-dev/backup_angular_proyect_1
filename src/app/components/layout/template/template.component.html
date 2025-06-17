@@ -1,0 +1,232 @@
+<div [class]="sidebar">
+  <div class="logo-details">
+    <i class='bx bx-fingerprint icon'></i>
+    <div class="logo_name">G.S.S</div>
+    <a (click)="changeOpen()" >
+      <i class='bx bx-menu' id="btn"></i>
+    </a>
+  </div>
+  <ul class="nav-list">
+    <!--<li>
+      <i class='bx bx-search'></i>
+      <input type="text" placeholder="Search...">
+      <span class="tooltip">Search</span>
+    </li>
+    <li>
+      <a routerLink="/dg-obra">
+        <i class='bx bx-grid-alt'></i>
+        <span class="links_name">Datos Generales por Obra</span>
+      </a>
+      <span class="tooltip">Datos Generales por Obra</span>
+    </li>
+    <li>
+      <a routerLink="/trabajadores">
+        <i class='bx bxs-user-rectangle'></i>
+        <span class="links_name">Listado general de los trabajadores</span>
+      </a>
+      <span class="tooltip">Listado general de los trabajadores</span>
+    </li>
+    <li>
+      <a routerLink="/dg-proyecto">
+        <i class='bx bxs-extension'></i>
+        <span class="links_name">Datos Generales por Proyecto</span>
+      </a>
+      <span class="tooltip">Datos Generales por Proyecto</span>
+    </li>-->
+    <ng-container *ngIf="authRole=='admin'">
+      <li>
+        <a routerLink="/control-asistencia">
+          <i class='bx bx-time-five'></i>
+          <span class="links_name">Control de Asistencia</span>
+        </a>
+        <span class="tooltip">Control de Asistencia</span>
+      </li>
+      <li>
+        <a routerLink="/perfil-contratista">
+          <i class='bx bxs-file-doc' ></i>
+          <span class="links_name">Control Documental</span>
+        </a>
+        <span class="tooltip">Control Documental</span>
+      </li>
+      <li>
+        <a routerLink="/control-contratos">
+          <i class='bx bxs-collection' ></i>
+          <span class="links_name">Control de Contratos</span>
+        </a>
+        <span class="tooltip">Control de Contratos</span>
+      </li>
+      <li>
+        <a routerLink="/reporte-economico">
+          <i class='bx bx-dollar-circle' ></i>
+          <span class="links_name">Cuotas Omitidas</span>
+        </a>
+        <span class="tooltip">Cuotas Omitidas</span>
+      </li>
+      <li>
+        <a routerLink="/matriz-altas-bajas">
+          <i class='bx bxs-window-alt'></i>
+          <span class="links_name">Matriz Altas y Bajas</span>
+        </a>
+        <span class="tooltip">Matriz Altas y Bajas</span>
+      </li>
+      <!--<li>
+        <a routerLink="/pagos">
+          <i class='bx bx-dollar'></i>
+          <span class="links_name">Pagos</span>
+        </a>
+        <span class="tooltip">Pagos</span>
+      </li>-->
+      <li class="dropdown">
+        <a data-toggle="collapse" data-target="#submenu" (click)="changeActive()">
+          <i class='bx bx-shield-alt'></i>
+          <span class="links_name">Administración</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <ng-container *ngIf="sidebar=='sidebar open'" class="arrow">
+            <i class="bx bx-down-arrow" *ngIf="adminActive=='si'" data-toggle="collapse" data-target="#submenu" ></i>
+            <i class="bx bx-right-arrow" *ngIf="adminActive=='no'" data-toggle="collapse" data-target="#submenu"></i>
+          </ng-container>
+        </a>
+        <span class="tooltip">Administración</span>
+        <ul class="nav collapse scroll" id="submenu">
+          <li>
+            <a routerLink="/trabajadores">
+              <i class='bx bxs-id-card'></i>
+              <span class="links_name">Trabajadores</span>
+            </a>
+            <span class="tooltip">Trabajadores</span>
+          </li>
+          <li>
+            <a routerLink="/proyectos">
+              <i class="bx bx-building"></i>
+              <span class="links_name">Proyectos</span>
+            </a>
+            <span class="tooltip">Proyectos</span>
+          </li>
+          <li>
+            <a routerLink="/proyectotipo">
+              <i class='bx bx-buildings'></i>
+              <span class="links_name">Tipos de proyecto</span>
+            </a>
+            <span class="tooltip">Tipos de proyecto</span>
+          </li>
+          <li>
+            <a routerLink="/entidades">
+              <i class='bx bxs-institution'></i>
+              <span class="links_name">Entidades</span>
+            </a>
+            <span class="tooltip">Entidades</span>
+          </li>
+          <li>
+            <a routerLink="/documentos-entregables">
+              <i class='bx bxs-file-archive'></i>
+              <span class="links_name">Documentos Entregables</span>
+            </a>
+            <span class="tooltip">Documentos Entregables</span>
+          </li>
+          <li>
+            <a routerLink="/tipo-documento">
+              <i class='bx bx-archive'></i>
+              <span class="links_name">Tipos de Documento</span>
+            </a>
+            <span class="tooltip">Tipos de Documento</span>
+          </li>
+          <li>
+            <a routerLink="/categorias">
+              <i class='bx bx-bookmark'></i>
+              <span class="links_name">Cargos</span>
+            </a>
+            <span class="tooltip">Cargos</span>
+          </li>
+          <li>
+            <a routerLink="/incapacidades">
+              <i class='bx bx bx-clinic'></i>
+              <span class="links_name">Incapacidades</span>
+            </a>
+            <span class="tooltip">Incapacidades</span>
+          </li>
+          <!--<li>
+            <a routerLink="/cuotas-pagables">
+              <i class='bx bx-dollar'></i>
+              <span class="links_name">Cuotas Pagables</span>
+            </a>
+            <span class="tooltip">Cuotas Pagables</span>
+          </li>-->
+          <li>
+            <a routerLink="/control-usuarios">
+              <i class='bx bx-user'></i>
+              <span class="links_name">Control de Usuarios</span>
+            </a>
+            <span class="tooltip">Control de Usuarios</span>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a routerLink="/new-email">
+          <i class='bx bx-mail-send'></i>
+          <span class="links_name">Nuevo correo</span>
+        </a>
+        <span class="tooltip">Nuevo correo</span>
+      </li>
+    </ng-container>
+    <ng-container *ngIf="authRole=='entidad'">
+      <li>
+        <a [routerLink]="'/rolentidad/' + id_entidad + '/asistencias'">
+          <i class='bx bx-time-five'></i>
+          <span class="links_name">Control de Asistencia</span>
+        </a>
+        <span class="tooltip">Control de Asistencia</span>
+      </li>
+      <li>
+        <a [routerLink]="'/rolentidad/' + id_entidad + '/incapacidades'">
+          <i class='bx bx bx-clinic'></i>
+          <span class="links_name">Incapacidades</span>
+        </a>
+        <span class="tooltip">Cargos</span>
+      </li>
+      <li>
+        <a [routerLink]="'/rolentidad/' + id_entidad + '/control-documental'">
+          <i class='bx bxs-file-doc' ></i>
+          <span class="links_name">Control Documental</span>
+        </a>
+        <span class="tooltip">Control Documental</span>
+      </li>
+      <li>
+        <a [routerLink]="'/rolentidad/' + id_entidad + '/trabajadores'">
+          <i class='bx bxs-id-card'></i>
+          <span class="links_name">Trabajadores</span>
+        </a>
+        <span class="tooltip">Trabajadores</span>
+      </li>
+      <li>
+        <a [routerLink]="'/rolentidad/' +id_entidad + '/matriz-altas-bajas'">
+          <i class='bx bxs-window-alt'></i>
+          <span class="links_name">Matriz Altas y Bajas</span>
+        </a>
+        <span class="tooltip">Matriz Altas y Bajas</span>
+      </li>
+    </ng-container>
+    <!--<li class="profile">
+      <div class="profile-details">
+        <img src="https://icon-library.com/images/profile-icon-images/profile-icon-images-29.jpg" alt="profileImg">
+        <div class="name_job">
+          <div class="name">Jess</div>
+          <div class="job">Web Developer</div>
+        </div>
+      </div>
+      <a (click)="logout()"><i class='bx bx-log-out' id="log_out"></i></a>
+    </li>-->
+  </ul>
+</div>
+<section class="container-fluid px-4" id="body">
+  <nav class="navbar">
+    <label class="navbar-brand form-label">Sistema de Control de Seguridad Social</label>
+    <form class="form-inline">
+      <!--<img alt="Imagen del usuario" [src]="profilePhotoUrl" class="profile-img">-->
+      <div class="name_job">
+        <div class="name">{{name}}&nbsp;({{email}})</div>
+        <div class="job">{{roleDescription}}</div>
+      </div>
+      <a (click)="logout()"><i class='bx bx-log-out log-out-out'></i></a>
+    </form>
+  </nav>
+  <router-outlet></router-outlet>
+</section>

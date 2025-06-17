@@ -1,0 +1,27 @@
+.espace{
+  margin:10px;
+}
+.proyecto-item{
+  border:1px solid;
+}
+.margin-button{
+  margin-top:-5px;
+}
+.acciones{
+  min-width: 120px;
+}
+.item{
+  border-left:1px solid #8f8f8f;
+}
+.card-simple{
+  width: 200px;
+  margin-top:-10px;
+}
+
+@medis(min-width:756px){
+  .card-simple{
+    width: 500px;
+    margin-top:50px;
+  }
+}
+

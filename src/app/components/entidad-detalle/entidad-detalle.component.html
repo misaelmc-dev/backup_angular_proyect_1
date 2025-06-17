@@ -1,0 +1,99 @@
+<br>
+<h1>Detalles de la Entidad "{{entidadNombre}}"</h1>
+<hr>
+<div class="row">
+  <div class="col-lg-10 col-md-10">
+    <div class="row">
+      <div class="col-md-3 col-sm-12"><b>ID: </b><label>{{entidadId}}</label></div>
+      <div class="col-md-4 col-sm-12"><b>Nombre:&nbsp;</b><label>{{entidadNombre}}</label></div>
+      <div class="col-md-3 col-sm-12"><b>RFC: </b><label>{{entidadRfc}}</label></div>
+      <div class="col-md-2 col-sm-12"><b>Persona física: </b><label *ngIf="entidadPersonaFisica">Sí</label><label *ngIf="!entidadPersonaFisica">No</label></div>
+    </div>
+    <div class="row">
+      <div class="col-md-3 col-sm-12"><b>Página Web: </b><label>{{entidadWebpage}}</label></div>
+      <div class="col-md-4 col-sm-12"><b>Domicilio: </b><label>{{entidadDomicilio}}</label></div>
+      <div class="col-md-3 col-sm-12"><b>Teléfono: </b><label>{{entidadTelefono}}</label></div>
+      <div class="col-md-2 col-sm-12"><b>País: </b><label>{{entidadPais}}</label></div>
+    </div>
+    <div class="row">
+      <div class="col-md-3 col-sm-12"><b>Ciudad: </b><label>{{entidadCiudad}}</label></div>
+      <div class="col-md-4 col-sm-12"><b>Correo: </b><label>{{entidadCorreo}}</label></div>
+      <div class="col-md-3 col-sm-12"><b>Código Biotime: </b><label>{{entidadCodBiotime}}</label></div>
+      <div class="col-md-2 col-sm-12"><b>Código Postal: </b><label>{{entidadCodPostal}}</label></div>
+     </div>
+  </div>
+  <div class="col-lg-2 col-mg-2 col-sm-12 d-flex flex-row-reverse" >
+    <div class="card card-simple">
+      <div class="card-body">
+        <h4 class="card-title">Lista de documentos obligatorios.</h4>
+        <button class="btn btn-success text-white" routerLink="/entidad-documentos/{{entidadId}}/{{entidadNombre}}"><i class="fa fa-list-ul"></i> Documentos</button>
+      </div>
+    </div>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-sm-6">
+    <br>
+    <div class="row espace">
+      <div class="col-1"></div>
+      <h3 class="col-7">Proyectos ejecutados</h3>
+      <div class="col-3 ">
+        <button type="button" class="btn btn-success pull-right" (click)="openAddModal(template)"><i class="fa fa-plus"></i> Asignar</button>
+      </div>
+    </div>
+    <br>
+    <div class="row espace" *ngFor="let proyecto of proyectosEntidad">
+      <label class="col-md-1"></label>
+      <label class="col-md-7 col-7 btn btn-default proyecto-item">{{proyecto.nombre}}</label>
+      <div class="col-md-2 col-3 acciones">
+        <button class="btn btn-primary " routerLink="/contrato-detalle/{{entidadId}}/{{proyecto.id}}"><i class="fa fa-eye"></i></button>&nbsp;
+        <button class="btn btn-danger" (click)="eliminarProyectoToEntidad(entidadId,proyecto.id);"><i class="fa fa-trash"></i></button>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 item">
+    <!--
+    <br>
+    <div class="row espace">
+      <div class="col-1"></div>
+      <h3 class="col-7">Trabajadores</h3>
+      <div class="col-3">
+        <button type="button" class="btn btn-success"><i class="fa fa-plus"></i> Asignar</button>
+      </div>
+    </div>
+    <br>
+    <div class="row espace" *ngFor="let trabajador of trabajadores">
+      <label class="col-1"></label>
+      <label class="col-8 btn btn-default proyecto-item">{{trabajador.nombre}} {{trabajador.apellidos}}</label>&nbsp;
+      <div class="col-1">
+        <button class="btn btn-danger"><i class="fa fa-trash"></i></button>
+      </div>
+    </div>
+    <br>
+    -->
+  </div>
+</div>
+<ng-template #template>
+  <div class="modal-header modal-large">
+    <h3 class="modal-title pull-left" *ngIf="!proyectoId">Asignar proyecto</h3>
+    <h3 class="modal-title pull-left" *ngIf="proyectoId">Actualizar asignación</h3>
+    <button type="button" class="btn btn-default pull-right" aria-label="Cerrar" (click)="modalRef.hide()">
+      <span aria-hidden="true">×</span> Cerrar
+    </button>
+  </div>
+  <div class="modal-body modal-large">
+    <div class="row espace">
+      <div class="col-4"><h4 class="form-label">Proyecto:</h4></div>
+      <div class="col-8">
+        <select class="form-control" #proyid>
+            <option *ngFor="let proy of proyectosDisponibles" value="{{proy.id}}">{{proy.nombre}}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer modal-large">
+    <button class="btn btn-success" *ngIf="!proyectoId" (click)="asignarProyectoToEntidad(entidadId,proyid.value);proyid.value='';"><i class="fa fa-check"></i> Asignar</button>&nbsp;
+    <button class="btn btn-success" *ngIf="proyectoId" ><i class="fa fa-check"></i> Actualizar</button>&nbsp;
+  </div>
+</ng-template>

@@ -1,0 +1,92 @@
+<br>
+<h1>Datos Generales de Obra</h1>
+<br>
+
+<form >
+  <fieldset>
+    <div class="row g-3">
+      <div class="input-group col">
+        <label class="input-group-text" for="inputSelect">Frecuencias:</label>
+        <select class="form-select" id="inputSelect" [(ngModel)]="estado" [ngModelOptions]="{standalone: true}" (change)='onEstadoSelected()'>
+          <option selected>Todos</option>
+          <option value="solo_docs_unica_vez">Única vez</option>
+          <option value="solo_docs_mensuales">Mensuales</option>
+          <option value="solo_docs_bimestrales">Bimestrales</option>
+        </select>
+      </div>
+      <div class="input-group col">
+        <label class="input-group-text" for="inputSelectEstados">Estados:</label>
+        <select class="form-select" id="inputSelectEstados" [(ngModel)]="estado" [ngModelOptions]="{standalone: true}" (change)='onEstadoSelected()'>
+          <option selected>Todos</option>
+          <option value="solo_entregados">Entregados</option>
+          <option value="solo_sin_entregar">Sin Entregar</option>
+        </select>
+      </div>
+      <div class="input-group col">
+        <label class="input-group-text" for="inputSelectTipos">Tipo de documento:</label>
+        <select class="form-select" id="inputSelectTipos" [(ngModel)]="tipoDocumento" [ngModelOptions]="{standalone: true}" (change)='getDocumentosByTipo()'>
+          <option *ngFor="let item of tiposDocumento" [value]="item.id">{{item.tipo}}</option>
+        </select>
+      </div>
+    </div>
+    <br>
+    <div class="row g-3">
+      <div class="input-group col">
+        <ng-multiselect-dropdown style="width: 100%"
+                                 [placeholder]="'Entidades'"
+                                 [settings]="dropdownSettings"
+                                 [data]="entidades"
+                                 [(ngModel)]="selectedItems"
+                                 (onSelect)="onItemSelect($event)"
+                                 (onSelectAll)="onSelectAll($event)"
+                                 (onDeSelect)="onItemUnselect($event)"
+                                 [ngModelOptions]="{standalone: true}"
+        >
+        </ng-multiselect-dropdown>
+      </div>
+    </div>
+  </fieldset>
+</form>
+
+<br>
+
+<table class="table">
+  <thead>
+  <tr>
+    <th scope="col">Frecuencia</th>
+    <th>Entidad</th>
+    <th>Tipo</th>
+    <th scope="col">Nombre</th>
+    <th scope="col">Nomenclatura</th>
+    <th scope="col">Fecha de creación</th>
+    <th scope="col" class="td">Estatus</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr  *ngFor="let item of dataSource | paginate : {
+                  itemsPerPage: pageSize,
+                  currentPage: pageNumber,
+                  totalItems: totalItems
+                };
+          let i = index
+        ">
+    <th scope="row">{{item.frecuencia_doc}}</th>
+    <td>{{item.nombre_entidad}}</td>
+    <td>{{item.tipo_doc}}</td>
+    <td>{{item.nombre_doc}}</td>
+    <td>{{item.nomenclatura_archivo_doc}}</td>
+    <td>{{item.fecha_debida | date: 'dd-MM-yyyy'}}</td>
+    <td class="td">
+      <i class='bx bxs-error-circle danger' *ngIf="!item.url_archivo"></i>
+      <i class='bx bxs-check-circle success' *ngIf="item.url_archivo"></i>
+    </td>
+  </tr>
+  </tbody>
+</table>
+<pagination-controls
+  previousLabel="Anterior"
+  nextLabel="Siguiente"
+  [responsive]="true"
+  (pageChange)="handlePageChange($event)"
+></pagination-controls>
+

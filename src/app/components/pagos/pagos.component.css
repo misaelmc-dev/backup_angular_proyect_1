@@ -1,0 +1,9 @@
+.pagination-center{
+  padding-left:30%;
+}
+.espace{margin: 5px;}
+@media (max-width:576px){
+  .pagination-center{
+    padding-left:0%;
+  }
+}

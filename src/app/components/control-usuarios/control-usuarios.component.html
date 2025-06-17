@@ -1,0 +1,105 @@
+<br>
+<h1>Control de Usuarios</h1>
+<hr>
+<div class="row">
+  <div class="col-xxl-1 col-xl-1 col-lg-1 col-md-1 col-sm-12">
+    <button type="button" class="btn btn-primary btn-nuevo" (click)="addUserModal(template)"><i class='fa fa-plus'></i></button>
+  </div>
+</div>
+<hr>
+<div class="row scroll">
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">Correo electrónico</th>
+      <th scope="col">Rol</th>
+      <th scope="col">Entidad</th>
+      <th scope="col">Acción</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let user of usuarios | paginate : {
+                  id: paginationId,
+                  itemsPerPage: pageSize,
+                  currentPage: pageNumber,
+                  totalItems: totalItems
+                };
+          let i = index">
+      <td>{{user.id}}</td>
+      <td>{{user.name}}</td>
+      <td>{{user.email}}</td>
+      <td *ngIf="user.role=='admin'">Admin</td>
+      <td *ngIf="user.role=='entidad'">Entidad</td>
+      <td>
+        <ng-container *ngIf="user.entidad_id">
+          <ng-container *ngFor="let entidad of entidades">
+            <label *ngIf="user.entidad_id==entidad.id">{{entidad.nombre}}</label>
+          </ng-container>
+        </ng-container>
+      </td>
+      <td class="accion">
+        <button class="btn btn-danger fa fa-trash-alt" (click)="deleteUser(user)"></button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<pagination-controls
+  [id]="paginationId"
+  previousLabel="Anterior"
+  nextLabel="Siguiente"
+  [responsive]="true"
+  (pageChange)="handlePageDiariasChange($event)"
+></pagination-controls>
+<ng-template #template>
+  <div class="modal-header modal-large">
+    <h3 class="modal-title pull-left">Nuevo Usuario</h3>
+    <button type="button" class="btn btn-default pull-right" aria-label="Cerrar" (click)="closeModal()">
+      <span aria-hidden="true">×</span> Cerrar
+    </button>
+  </div>
+  <div class="modal-body modal-large">
+    <div class="row espace">
+      <div class="col-5"><h4 class="form-label">Usuario<label class="red">*</label>:</h4></div>
+      <div class="col-7"><input type="text" class="form-control" [(ngModel)]="usuarioName"></div>
+    </div>
+    <div class="row espace">
+      <div class="col-5"><h4 class="form-label">Correo electrónico<label class="red">*</label>:</h4></div>
+      <div class="col-7">
+        <input type="email" class="form-control" placeholder="Ejemplo: usuario@gmail.com" [(ngModel)]="usuarioEmail" name="primaryEmail"  email #prmEmail="ngModel">
+        <div *ngIf="prmEmail.errors?.email" class="red">Correo electrónico no válido. </div>
+      </div>
+    </div>
+    <div class="row espace">
+      <div class="col-5"><h4 class="form-label">Contraseña<label class="red">*</label>:</h4></div>
+      <div class="col-7"><input type="text" class="form-control" placeholder="8 caracteres mínimo" [(ngModel)]="usuarioPass"></div>
+    </div>
+    <div class="row espace">
+      <div class="col-5"><h4 class="form-label">Confirmar contraseña<label class="red">*</label>:</h4></div>
+      <div class="col-7"><input type="password" class="form-control" placeholder="8 caracteres mínimo" [(ngModel)]="usuarioPassComfirm"></div>
+    </div>
+    <div class="row espace ">
+      <div class="col-5"><h4 class="form-label">Rol:</h4></div>
+      <div class="col-7">
+        <button class="btn btn-success" (click)="changeCheck()" *ngIf="usuarioRole=='entidad'"><i class="fa fa-layer-group"></i>  Entidad</button>
+        <button class="btn btn-primary" (click)="changeCheck()" *ngIf="usuarioRole=='admin'"><i class="fa fa-user"></i>  Admin</button>
+      </div>
+    </div>
+    <div class="row espace">
+      <ng-container *ngIf="usuarioRole=='entidad'">
+        <div class="col-5"><h4 class="form-label">Entidad:</h4></div>
+        <div class="col-7">
+          <select class="form-select" [(ngModel)]="usuarioEntidad">
+            <option *ngFor="let entidad of entidadesDisponibles" value="{{entidad.id}}">{{entidad.nombre}}</option>
+          </select>
+        </div>
+      </ng-container>
+    </div>
+    &nbsp;&nbsp;&nbsp;&nbsp;<span class="red-s">*</span>&nbsp; Campos obligatorios
+  </div>
+  <div class="modal-footer modal-large">
+    <button class="btn btn-success" (click)="addUser()"><i class="fa fa-save"></i> Guardar</button>
+  </div>
+</ng-template>

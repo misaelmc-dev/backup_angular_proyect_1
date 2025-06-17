@@ -1,0 +1,261 @@
+<br>
+<div class="row">
+  <ng-container *ngFor="let calculo of calculos">
+    <div class="col-md" *ngIf="calculo.id!=3" >
+      <h5><b>{{calculo.nombre}}: </b>{{calculo.valor | number:'1.2-2'}} <label *ngIf="calculo.es_porciento">%</label></h5>
+    </div>
+    <div class="col-md-2" *ngIf="calculo.id==3" >
+      <h5><b>{{calculo.nombre}}: </b>{{calculo.valor | number:'1.2-2'}} <label *ngIf="calculo.es_porciento">%</label></h5>
+    </div>
+  </ng-container>
+  <div class="col-md-2 d-flex flex-row-reverse">
+    <button type="button" class="btn btn-success" (click)="openCuotasModal(updateCuotas)"><i class="fa fa-edit"></i> Editar </button>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="d-flex flex-row-reverse">
+    <button type="button" class="btn btn-danger button-magen" (click)="cleanFilters()"> Limpiar filtros &nbsp;<i class="bx bx-filter-alt"></i></button>&nbsp;&nbsp;
+    <button type="button" class="btn btn-success button-magen" (click)="exportToExcel()">Exportar Excel &nbsp;<i class='bx bxs-download'></i></button>
+  </div>
+</div>
+<br>
+<div class="row">
+  <div class="col-lg col-sm-12">
+    <div class="input-group">
+      <input type="text" name="daterange" autocomplete="off" bsDatepicker [maxDate]="today"
+             [bsConfig]="{ rangeInputFormat : 'MMMM YYYY', dateInputFormat: 'MMMM YYYY', showWeekNumbers: false, isAnimated: true, containerClass: 'theme-dark-blue' }"
+             id="DateOfBirth" placeholder="Mes" (bsValueChange)="dateRangeCreated($event)" (onShown)="onOpenCalendar($event)"
+             [(ngModel)]="rangeMonthSelected"  class="form-control fecha-class"/>
+      <label class="input-group-text fecha-color"><i class="fa fa-calendar"></i></label>
+    </div>
+  </div>
+  <div class="col-lg col-sm-12">
+    <div class="input-group">
+      <label class="input-group-text">Entidad:</label>
+      <select class="form-select" [(ngModel)]="selectedEntidad" [ngModelOptions]="{standalone: true}" (change)='getProyectosAndTrabajadoresByEntidad()' [disabled]="disabledFilters">
+        <ng-container *ngIf="numeroEntidades">
+          <option *ngFor="let entidad of entidades" value="{{entidad.id}}" selected="{{selected}}">{{entidad.nombre}}</option>
+        </ng-container>
+        <ng-container *ngIf="!numeroEntidades">
+          <option></option>
+          <ng-container *ngFor="let entidad of entidades">
+            <ng-container *ngIf="entidad.nombre">
+              <option *ngIf="selectedEntidad==entidad.id" value="{{entidad.id}}" selected="{{selected}}">{{entidad.nombre}}</option>
+              <option *ngIf="selectedEntidad!=entidad.id" value="{{entidad.id}}">{{entidad.nombre}}</option>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </select>
+    </div>
+  </div>
+  <div class="col-lg col-sm-12">
+    <div class="input-group" >
+      <label class="input-group-text">Proyectos:</label>
+      <select class="form-select" [(ngModel)]="selectedProyecto" [ngModelOptions]="{standalone: true}" (change)='getEntidadAndTrabajadorByProyecto()' [disabled]="disabledFilters">
+        <ng-container *ngIf="numeroProyectos">
+          <option *ngFor="let proyecto of proyectos" value="{{proyecto.id}}" selected="{{selected}}">{{proyecto.nombre}}</option>
+        </ng-container>
+        <ng-container *ngIf="!numeroProyectos">
+          <option></option>
+          <ng-container *ngFor="let proyecto of proyectos">
+            <ng-container *ngIf="proyecto.nombre">
+              <option *ngIf="selectedProyecto==proyecto.id" value="{{proyecto.id}}" selected="{{selected}}">{{proyecto.nombre}}</option>
+              <option *ngIf="selectedProyecto!=proyecto.id" value="{{proyecto.id}}">{{proyecto.nombre}}</option>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </select>
+    </div>
+  </div>
+  <div class="col-lg col-sm-12">
+    <div class="input-group" >
+      <label class="input-group-text">Trabajadores:</label>
+      <select class="form-select" [(ngModel)]="selectedTrabajador" [ngModelOptions]="{standalone: true}" (change)='getEntidadAndProyectoByTrabajador()' [disabled]="disabledFiltersTrabajadores">
+        <ng-container *ngIf="numeroTrabajadores">
+          <option *ngFor="let trabajador of trabajadores" value="{{trabajador.id}}" selected="{{selected}}">{{trabajador.nombre}} {{trabajador.apellidos}}</option>
+        </ng-container>
+        <ng-container *ngIf="!numeroTrabajadores">
+          <option></option>
+          <ng-container *ngFor="let trabajador of trabajadores">
+            <ng-container *ngIf="trabajador.nombre">
+              <option *ngIf="selectedTrabajador==trabajador.id" value="{{trabajador.id}}" selected="{{selected}}">{{trabajador.nombre}} {{trabajador.apellidos}}</option>
+              <option *ngIf="selectedTrabajador!=trabajador.id" value="{{trabajador.id}}">{{trabajador.nombre}} {{trabajador.apellidos}}</option>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </select>
+    </div>
+  </div>
+</div>
+<br>
+<div class="progress" *ngIf="showLoadingBar">
+  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+<div class="row">
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nombre del trabajador</th>
+      <th>NSS</th>
+      <th>SBC</th>
+      <th>Días laborados</th>
+      <th>Total cuota IMSS</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of returnedArray| paginate : {id: paginationId,itemsPerPage: 10,currentPage: 1}; let i = index">
+      <td>{{item.id_rel_lab}}</td>
+      <td>{{item.nomb_trab}} {{item.apell_trab}}</td>
+      <td>{{item.nss}}</td>
+      <td>{{item.sbc | number:'1.2-2'}}</td>
+      <td>{{item.tot_lab}}</td>
+      <td>{{item.tot_presuntivo_pagad_sua | number:'1.2-2'}}</td>
+    </tr>
+    <tr *ngIf="selectedEntidad!=0 && returnedArray.length==0">
+      <td colspan="10" class="text-center">
+        <br>No hay trabajadores que coincidan con la búsqueda<br><br>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <div class="pagination-center" *ngIf="paginationVisible && returnedArray.length>0">
+    <pagination
+      [id]="paginationId"
+      [boundaryLinks]="true"
+      [directionLinks]="true"
+      [totalItems]="contentArray.length"
+      [itemsPerPage]="10"
+      [maxSize]="5"
+      firstText="Inicio"
+      previousText="<< Anterior"
+      nextText="Siguiente >>"
+      lastText="Final"
+      (pageChanged)="pageChanged($event)">
+    </pagination>
+  </div>
+  <br>
+</div>
+<ng-template #template>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">{{nombreTrabajador}}</h4>
+    <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="modalRef?.hide()">
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <table id="details" class="table" *ngIf="details" >
+      <tr>
+        <th class="details_td">Riesgo de trabajo:</th>
+        <td class="details_td">$ {{details.riesg_trab}}</td>
+      </tr>
+      <tr>
+        <th class="details_td">Cuota fija:</th>
+        <td class="details_td">$ {{details.cuot_fij}}</td>
+      </tr>
+      <tr>
+        <th class="details_td">Excedente Patrón:</th>
+        <td class="details_td">$ {{details.exced_pat}}</td>
+      </tr>
+      <tr>
+        <th class="details_td">Excedente Trabajador:</th>
+        <td class="details_td">$ {{details.exced_trab}}</td>
+      </tr>
+      <tr>
+        <th class="details_td">Prestaciones Patrón:</th>
+        <td class="details_td">$ {{details.prest_pat}}</td>
+      </tr>
+      <tr>
+        <th class="details_td">Prestaciones Trabajador:</th>
+        <td class="details_td">$ {{details.prest_trab}}</td>
+      </tr>
+      <tr>
+        <th class="details_td">Pensionados Patrón:</th>
+        <td class="details_td">$ {{details.pens_pat}}</td>
+      </tr>
+      <tr>
+        <th class="details_td">Pensionados Trabajador:</th>
+        <td class="details_td">$ {{details.pens_trab}}</td>
+      </tr>
+      <tr>
+        <th class="details_td">Invalidez y Vida Patrón:</th>
+        <td class="details_td">$ {{details.inval_pat}}</td>
+      </tr>
+      <tr>
+        <th class="details_td">Invalidez y Vida Trabajador:</th>
+        <td class="details_td">$ {{details.inval_trab}}</td>
+      </tr>
+      <tr>
+        <th class="details_td">Guarderías:</th>
+        <td class="details_td">$ {{details.cuot_guard}}</td>
+      </tr>
+      <tr>
+        <th class="details_td">Retiros:</th>
+        <td class="details_td">$ {{details.cuot_ret}}</td>
+      </tr>
+      <tr>
+        <th class="details_td">Cesantía y Vejez Patrón:</th>
+        <td class="details_td">$ {{details.cesant_vej_pat}}</td>
+      </tr>
+      <tr>
+        <th class="details_td">Cesantía y Vejez Trabajador:</th>
+        <td class="details_td">$ {{details.cesant_vej_trab}}</td>
+      </tr>
+      <tr>
+        <th class="details_td">Infonavit:</th>
+        <td class="details_td">$ {{details.infonav}}</td>
+      </tr>
+    </table>
+  </div>
+</ng-template>
+<ng-template #updateCuotas>
+  <div class="modal-header modal-large">
+    <h4 class="modal-title pull-left">{{nombreTrabajador}}</h4>
+    <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="modalRef?.hide()">
+      <span aria-hidden="true" class="visually-hidden">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body modal-large">
+    <div class="row espace">
+      <div class="col-10">
+      </div>
+      <div class="col-2">
+        <h5>Porcentaje</h5>
+      </div>
+    </div>
+    <div class="row espace">
+      <div class="col-7"><h4 class="form-label">{{primaNombre}}:</h4></div>
+      <div class="col-3">
+        <input type="number" class="form-control" [(ngModel)]="primaValor">
+      </div>
+      <div class="col-2">
+        <div class="btn btn-sm btn-success" *ngIf="primaPorciento"><i class="fa fa-check"></i></div>
+        <div class="btn btn-sm btn-default" *ngIf="!primaPorciento">&nbsp;&nbsp;&nbsp;&nbsp;</div>
+      </div>
+    </div>
+    <div class="row espace">
+      <div class="col-7"><h4 class="form-label">{{salarioNombre}}:</h4></div>
+      <div class="col-3">
+        <input type="number" class="form-control" [(ngModel)]="salarioValor">
+      </div>
+      <div class="col-2">
+        <div class="btn btn-sm btn-success" *ngIf="salarioPorciento"><i class="fa fa-check"></i></div>
+        <div class="btn btn-sm btn-default" *ngIf="!salarioPorciento">&nbsp;&nbsp;&nbsp;&nbsp;</div>
+      </div>
+    </div>
+    <div class="row espace">
+      <div class="col-7"><h4 class="form-label">Unidad de Medida Y Actualización (UMA):</h4></div>
+      <div class="col-3">
+        <input type="number" class="form-control" [(ngModel)]="umaValor">
+      </div>
+      <div class="col-2">
+        <div class="btn btn-sm btn-success" *ngIf="umaPorciento"><i class="fa fa-check"></i></div>
+        <div class="btn btn-sm btn-default" *ngIf="!umaPorciento">&nbsp;&nbsp;&nbsp;&nbsp;</div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer modal-large">
+    <button class="btn btn-success" (click)="updateCuotaSIMSS()"><i class="fa fa-save"></i>&nbsp;&nbsp;Actualizar</button>
+  </div>
+</ng-template>
